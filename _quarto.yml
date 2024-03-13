@@ -1,4 +1,4 @@
-# This file controls the settings for your Quarto template 
+# This file controls the settings for the Quarto template 
 
 # website settings
 website:
@@ -21,15 +21,14 @@ website:
         href: research/index.qmd
       - text: "Teaching"
         href: teaching/index.qmd
-      - text: "CV"
-        href: cv/index.qmd
+      
     
     # social media handles
     right:
       - icon: folder-symlink
         href: https://people.utwente.nl/m.c.mikkers
-      - icon: mastadon
-        href: https://twitter.com/MarvinSchmittML
+      - icon: mastodon
+        href: https://mastodon.social/@mcmikkers
       - icon: linkedin
         href: https://www.linkedin.com/in/misja-m-413b924/
       - icon: envelope
