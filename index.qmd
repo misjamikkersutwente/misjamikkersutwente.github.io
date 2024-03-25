@@ -23,6 +23,6 @@ about:
 
 # Welcome to my website
 
-I am a [professor of Health Systems Engineering](https://people.utwente.nl/m.c.mikkers) at [the section Health Technology & Services Research (HTSR)](https://www.utwente.nl/en/bms/htsr/) of [the faculty Behavioural, Management and Social Sciences (BMS)](https://www.utwente.nl/en/bms/) at[the University of Twente](https://www.utwente.nl/en/).
+I am a [professor of Health Systems Engineering](https://people.utwente.nl/m.c.mikkers) at [the section Health Technology & Services Research (HTSR)](https://www.utwente.nl/en/bms/htsr/) of [the faculty Behavioural, Management and Social Sciences (BMS)](https://www.utwente.nl/en/bms/) at [the University of Twente](https://www.utwente.nl/en/).
 
 Please feel free to [contact me](mailto:m.c.mikkers@utwente.nl) if you have any questions or would like to discuss potential projects.

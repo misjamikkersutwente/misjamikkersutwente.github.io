@@ -1,0 +1,32 @@
+# options specified here will apply to all posts in this folder
+
+# freeze computational output
+# (see https://quarto.org/docs/projects/code-execution.html#freeze)
+freeze: true
+description-meta: "{{< meta description >}}"
+
+# Enable banner style title blocks
+
+
+# Default for table of contents
+toc: true
+toc-title: Contents
+toc-location: left
+
+# Default knitr options
+execute:
+  echo: true
+  message: true
+  warning: true
+  
+format:   
+  html:
+    code-fold: true
+    
+    
+    
+# Default author
+author:
+  - name: Misja Mikkers
+    url: https://misjamikkersutwente.github.io/
+    orcid: 0009-0003-0042-0531

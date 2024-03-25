@@ -6,8 +6,10 @@
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
+<meta name="author" content="">
+<meta name="description" content="Welcome to my blog.">
 
-<title>Misja Mikkers - Blog</title>
+<title>Misja Mikkers - Blogs</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -30,6 +32,8 @@ ul.task-list li input[type="checkbox"] {
 <script src="../site_libs/quarto-search/quarto-search.js"></script>
 <meta name="quarto:offset" content="../">
 <link href="../img/favicon.png" rel="icon" type="image/png">
+<script src="../site_libs/quarto-listing/list.min.js"></script>
+<script src="../site_libs/quarto-listing/quarto-listing.js"></script>
 <script src="../site_libs/quarto-html/quarto.js"></script>
 <script src="../site_libs/quarto-html/popper.min.js"></script>
 <script src="../site_libs/quarto-html/tippy.umd.min.js"></script>
@@ -59,11 +63,70 @@ ul.task-list li input[type="checkbox"] {
     "search-label": "Search"
   }
 }</script>
+<script>
 
+  window.document.addEventListener("DOMContentLoaded", function (_event) {
+    const listingTargetEl = window.document.querySelector('#listing-posts_2024 .list');
+    if (!listingTargetEl) {
+      // No listing discovered, do not attach.
+      return; 
+    }
+
+    const options = {
+      valueNames: ['listing-website','listing-project','listing-execute','listing-format','listing-language','listing-freeze','listing-description-meta','listing-toc','listing-toc-title','listing-toc-location','listing-author','listing-title','listing-authors','listing-description','listing-date','listing-categories','listing-draft','listing-path','listing-outputHref','listing-date-modified','listing-filename','listing-file-modified','listing-reading-time',{ data: ['index'] },{ data: ['categories'] },{ data: ['listing-date-sort'] },{ data: ['listing-date-modified-sort'] },{ data: ['listing-file-modified-sort'] },{ data: ['listing-reading-time-sort'] }],
+      
+      searchColumns: ["listing-website","listing-project","listing-execute","listing-format","listing-language","listing-freeze","listing-description-meta","listing-toc","listing-toc-title","listing-toc-location","listing-author","listing-title","listing-authors","listing-description","listing-date","listing-categories","listing-draft","listing-path","listing-outputHref","listing-date-modified","listing-filename","listing-file-modified","listing-reading-time"],
+    };
+
+    window['quarto-listings'] = window['quarto-listings'] || {};
+    window['quarto-listings']['listing-posts_2024'] = new List('listing-posts_2024', options);
+
+    if (window['quarto-listing-loaded']) {
+      window['quarto-listing-loaded']();
+    }
+  });
+
+  window.addEventListener('hashchange',() => {
+    if (window['quarto-listing-loaded']) {
+      window['quarto-listing-loaded']();
+    }
+  })
+  
+
+  window.document.addEventListener("DOMContentLoaded", function (_event) {
+    const listingTargetEl = window.document.querySelector('#listing-posts_old .list');
+    if (!listingTargetEl) {
+      // No listing discovered, do not attach.
+      return; 
+    }
+
+    const options = {
+      valueNames: ['listing-website','listing-project','listing-execute','listing-format','listing-language','listing-freeze','listing-description-meta','listing-toc','listing-toc-title','listing-toc-location','listing-author','listing-title','listing-authors','listing-description','listing-date','listing-categories','listing-draft','listing-path','listing-outputHref','listing-date-modified','listing-filename','listing-file-modified','listing-reading-time',{ data: ['index'] },{ data: ['categories'] },{ data: ['listing-date-sort'] },{ data: ['listing-date-modified-sort'] },{ data: ['listing-file-modified-sort'] },{ data: ['listing-reading-time-sort'] }],
+      
+      searchColumns: ["listing-website","listing-project","listing-execute","listing-format","listing-language","listing-freeze","listing-description-meta","listing-toc","listing-toc-title","listing-toc-location","listing-author","listing-title","listing-authors","listing-description","listing-date","listing-categories","listing-draft","listing-path","listing-outputHref","listing-date-modified","listing-filename","listing-file-modified","listing-reading-time"],
+    };
+
+    window['quarto-listings'] = window['quarto-listings'] || {};
+    window['quarto-listings']['listing-posts_old'] = new List('listing-posts_old', options);
+
+    if (window['quarto-listing-loaded']) {
+      window['quarto-listing-loaded']();
+    }
+  });
+
+  window.addEventListener('hashchange',() => {
+    if (window['quarto-listing-loaded']) {
+      window['quarto-listing-loaded']();
+    }
+  })
+  </script>
+
+  <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
 
 </head>
 
-<body class="nav-fixed fullcontent">
+<body class="nav-fixed">
 
 <div id="quarto-search-results"></div>
   <header id="quarto-header" class="headroom fixed-top">
@@ -125,16 +188,25 @@ ul.task-list li input[type="checkbox"] {
     </nav>
 </header>
 <!-- content -->
-<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-full page-navbar">
 <!-- sidebar -->
 <!-- margin-sidebar -->
-    
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">Year</h2>
+   
+  <ul>
+  <li><a href="#section" id="toc-section" class="nav-link active" data-scroll-target="#section">2024</a></li>
+  <li><a href="#older-posts" id="toc-older-posts" class="nav-link" data-scroll-target="#older-posts">Older posts</a></li>
+  </ul>
+</nav>
+    <h5 class="quarto-listing-category-title">Categories</h5><div class="quarto-listing-category category-default"><div class="category" data-category="">All <span class="quarto-category-count">(2)</span></div><div class="category" data-category="Bayesian Statistics">Bayesian Statistics <span class="quarto-category-count">(1)</span></div><div class="category" data-category="DEA">DEA <span class="quarto-category-count">(1)</span></div><div class="category" data-category="Difference in Difference">Difference in Difference <span class="quarto-category-count">(1)</span></div><div class="category" data-category="Power Analysis">Power Analysis <span class="quarto-category-count">(1)</span></div></div></div>
 <!-- main -->
-<main class="content" id="quarto-document-content">
+<main class="content column-page-left" id="quarto-document-content">
 
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
-<h1 class="title">Blog</h1>
+<h1 class="title">Blogs</h1>
 </div>
 
 
@@ -149,8 +221,65 @@ ul.task-list li input[type="checkbox"] {
 
 </header>
 
+<p>Welcome to my blog. Here you will find a collection of posts on various topics.</p>
+<section id="section" class="level2">
+<h2 class="anchored" data-anchor-id="section">2024</h2>
+<div id="listing-posts_2024" class="quarto-listing quarto-listing-container-custom">
+<div class="list blog">
+    <div class="blog-entry" data-index="0" data-categories="Bayesian Statistics,Power Analysis,Difference in Difference" data-listing-date-sort="1710889200000" data-listing-file-modified-sort="1711358266868" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="32">
+        <div class="metadata">          
+            <p class="date listing-date">March 20, 2024</p>
+        </div>
+        <div class="body">
+            <p class="title listing-title"><a href="../blog/Poweranalysis/index.html">Bayesian Power Analyse</a></p>
+            <div class="post-categories listing-categories">
+                <div class="post-category listing-category" onclick="window.quartoListingCategory('Bayesian Statistics'); return false;">
+                    Bayesian Statistics
+                </div>
+                <div class="post-category listing-category" onclick="window.quartoListingCategory('Power Analysis'); return false;">
+                    Power Analysis
+                </div>
+                <div class="post-category listing-category" onclick="window.quartoListingCategory('Difference in Difference'); return false;">
+                    Difference in Difference
+                </div>
+            </div>
+            <p class="description listing-description">This blog provides an example of conducting Bayesian power analyses, focusing on a healthcare study comparing intervention and control practices. It covers setting up simulations, generating data, adjusting for time trends, and estimating effects with Bayesian regression. Installation instructions for necessary software and R packages, alongside tips for running simulations and analyzing results, are also included.</p>
+        </div>
+    </div>
+</div>
+<div class="listing-no-matching d-none">
+No matching items
+</div>
+</div>
+</section>
+<section id="older-posts" class="level2">
+<h2 class="anchored" data-anchor-id="older-posts">Older posts</h2>
+<div id="listing-posts_old" class="quarto-listing quarto-listing-container-custom">
+<div class="list blog">
+    <div class="blog-entry" data-index="0" data-categories="DEA" data-listing-date-sort="1629496800000" data-listing-file-modified-sort="1711358394843" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="7">
+        <div class="metadata">          
+            <p class="date listing-date">August 21, 2021</p>
+        </div>
+        <div class="body">
+            <p class="title listing-title"><a href="../blog/DEA/index.html">A benchmarking example in R</a></p>
+            <div class="post-categories listing-categories">
+                <div class="post-category listing-category" onclick="window.quartoListingCategory('DEA'); return false;">
+                    DEA
+                </div>
+            </div>
+            <p class="description listing-description">The aim of this example is to learn how to apply DEA and to demonstrate that DEA is capable to reveal inefficiency. Therefore, we will first simulate our dataset of 100 courts, based on a certain assumption on inefficiency of each court (we will therefore know the'true efficiency'). And then we will use DEA to determine efficiency by means of DEA. By comparing DEA results to the assumed efficiency, we will establish whether DEA is capable to reveal true efficiency.</p>
+        </div>
+    </div>
+</div>
+<div class="listing-no-matching d-none">
+No matching items
+</div>
+</div>
+<hr>
 
 
+
+</section>
 
 </main> <!-- /main -->
 <script id="quarto-html-after-body" type="application/javascript">

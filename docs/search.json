@@ -1,16 +1,198 @@
 [
   {
-    "objectID": "index.html",
-    "href": "index.html",
-    "title": "Welcome to my website",
-    "section": "",
-    "text": "Mastodon\n  \n  \n    \n     Github\n  \n  \n    \n     LinkedIn\n  \n  \n    \n     Email\n  \n\n\n\n\nWelcome to my website\nI am a professor of Health Systems Engineering at the section Health Technology & Services Research (HTSR) of the faculty Behavioural, Management and Social Sciences (BMS) atthe University of Twente.\nPlease feel free to contact me if you have any questions or would like to discuss potential projects."
-  },
-  {
     "objectID": "teaching/index.html",
     "href": "teaching/index.html",
     "title": "Teaching",
     "section": "",
     "text": "Courses"
+  },
+  {
+    "objectID": "index.html",
+    "href": "index.html",
+    "title": "Welcome to my website",
+    "section": "",
+    "text": "Mastodon\n  \n  \n    \n     Github\n  \n  \n    \n     LinkedIn\n  \n  \n    \n     Email\n  \n\n\n\n\nWelcome to my website\nI am a professor of Health Systems Engineering at the section Health Technology & Services Research (HTSR) of the faculty Behavioural, Management and Social Sciences (BMS) at the University of Twente.\nPlease feel free to contact me if you have any questions or would like to discuss potential projects."
+  },
+  {
+    "objectID": "blog/index.html",
+    "href": "blog/index.html",
+    "title": "Blogs",
+    "section": "",
+    "text": "Welcome to my blog. Here you will find a collection of posts on various topics."
+  },
+  {
+    "objectID": "blog/index.html#section",
+    "href": "blog/index.html#section",
+    "title": "Blogs",
+    "section": "2024",
+    "text": "2024\n\n\n    \n                  \n            March 20, 2024\n        \n        \n            Bayesian Power Analyse\n            \n                \n                    Bayesian Statistics\n                \n                \n                    Power Analysis\n                \n                \n                    Difference in Difference\n                \n            \n            This blog provides an example of conducting Bayesian power analyses, focusing on a healthcare study comparing intervention and control practices. It covers setting up simulations, generating data, adjusting for time trends, and estimating effects with Bayesian regression. Installation instructions for necessary software and R packages, alongside tips for running simulations and analyzing results, are also included.\n        \n    \n\n\nNo matching items"
+  },
+  {
+    "objectID": "blog/index.html#older-posts",
+    "href": "blog/index.html#older-posts",
+    "title": "Blogs",
+    "section": "Older posts",
+    "text": "Older posts\n\n\n    \n                  \n            August 21, 2021\n        \n        \n            A benchmarking example in R\n            \n                \n                    DEA\n                \n            \n            The aim of this example is to learn how to apply DEA and to demonstrate that DEA is capable to reveal inefficiency. Therefore, we will first simulate our dataset of 100 courts, based on a certain assumption on inefficiency of each court (we will therefore know the'true efficiency'). And then we will use DEA to determine efficiency by means of DEA. By comparing DEA results to the assumed efficiency, we will establish whether DEA is capable to reveal true efficiency.\n        \n    \n\n\nNo matching items"
+  },
+  {
+    "objectID": "blog/DEA/index.html",
+    "href": "blog/DEA/index.html",
+    "title": "A benchmarking example in R",
+    "section": "",
+    "text": "In this post we will give you an example of a DEA benchmark performed in R. We will do this with simulated data.\nIn this case study we consider 100 courts. Courts handle ‘disputes’, which result in cases or settlements. Hence, settlements and cases are (perfect) substitutes. On the input side, courts incur costs. We consider several DEA models for benchmarking courts. The aim of this example is to learn how to apply DEA and to demonstrate that DEA is capable to reveal inefficiency. Therefore, we will first simulate our dataset of 100 courts, based on a certain assumption on inefficiency of each court (we will therefore know the’true efficiency’). And then we will use DEA to determine efficiency by means of DEA. By comparing DEA results to the assumed efficiency, we will establish whether DEA is capable to reveal true efficiency."
+  },
+  {
+    "objectID": "blog/DEA/index.html#select-our-inputs-and-outputs",
+    "href": "blog/DEA/index.html#select-our-inputs-and-outputs",
+    "title": "A benchmarking example in R",
+    "section": "Select our inputs and outputs",
+    "text": "Select our inputs and outputs\nThe Benchmarking package needs inputs and outputs to be matrices. As long as we want 1 input and 1 ouput, we just need to select the relevant variables.\n\nCodemx &lt;- d1 %&gt;%\n  select(TC)\nmy &lt;- d1 %&gt;%\n  select(Cases)"
+  },
+  {
+    "objectID": "blog/DEA/index.html#running-the-model",
+    "href": "blog/DEA/index.html#running-the-model",
+    "title": "A benchmarking example in R",
+    "section": "Running the model",
+    "text": "Running the model\nNow we can run the DEA model:\nWe need to chose the inputs and the outputs (as we have done above), the orientation (since we are interested in input minimization we chose “in”) and returns to scale (CRS)\n\nCodemodel_1 &lt;- dea(mx, my, ORIENTATION = \"in\", RTS= \"crs\")"
+  },
+  {
+    "objectID": "blog/DEA/index.html#looking-at-the-output",
+    "href": "blog/DEA/index.html#looking-at-the-output",
+    "title": "A benchmarking example in R",
+    "section": "Looking at the output",
+    "text": "Looking at the output\nThe package Benchmarking produces a list with some information.\nMost interesting information are the scores and the peers.\n\nCodeefficiency_scores &lt;- model_1$eff\n\nd_eff &lt;- as.data.frame(efficiency_scores) %&gt;%\n  mutate(Peers = peers(model_1))\n\nkable(summary(d_eff))\n\n\n\n\nefficiency_scores\nPeers.peer1\n\n\n\n\nMin. :0.4190\nMin. :100\n\n\n\n1st Qu.:0.5835\n1st Qu.:100\n\n\n\nMedian :0.6812\nMedian :100\n\n\n\nMean :0.6896\nMean :100\n\n\n\n3rd Qu.:0.7901\n3rd Qu.:100\n\n\n\nMax. :1.0000\nMax. :100\n\n\n\n\n\nAs we can see, DMU with id 100 is peer for all firms."
+  },
+  {
+    "objectID": "blog/DEA/index.html#evaluation-of-the-model",
+    "href": "blog/DEA/index.html#evaluation-of-the-model",
+    "title": "A benchmarking example in R",
+    "section": "Evaluation of the model",
+    "text": "Evaluation of the model\nIn reality we cannot evulate the model, but since we work with simulated data we can see how well our model performs by comparing the “real efficiency scores” with the estimated scores from the model.\nFirst, we will add the efficiency scores to our initial dataset\n\nCoded1 &lt;- d1 %&gt;%\n  mutate(Model_1 = model_1$eff)\n\n\nNow we can plot the modelled inefficiency versus the real inefficiency\n\nCodeggplot(data = d1, aes(x= Efficiency, y=Model_1)) + \n  geom_point(color = \"blue\") + \n  geom_abline(intercept = 0, slope = 1, color = \"red\") + \n  xlim(0.4,1) +\n  ylim(0.4,1) +\n  xlab(\"True efficiency\") +\n  ylab(\"Efficiency scores model 1\") +\n  theme_minimal()\n\n\n\n\nWe can conclude that our model does not perform very good:\n\nmost efficiency scores are underestimated\na few are overstated\n\nThe reason is that we only took 1 output, while in our simulated dataset Courts produced 2 outputs."
+  },
+  {
+    "objectID": "blog/DEA/index.html#select-our-inputs-and-outputs-1",
+    "href": "blog/DEA/index.html#select-our-inputs-and-outputs-1",
+    "title": "A benchmarking example in R",
+    "section": "Select our inputs and outputs",
+    "text": "Select our inputs and outputs\nWe will run a model with 1 input (TC) and 2 outputs (Cases and Settlements). First we have to select the right variables as input and outputs. Please note: since we have 2 chosen 2 outputs, we should explicitly transform the dataframe into a matrix.\n\nCodemx_1 &lt;- d1 %&gt;%\n  select(TC)\n\nmy_1a &lt;- d1 %&gt;%\n  select(Cases, Settlements)\n\nmy_1 &lt;- as.matrix(my_1a)"
+  },
+  {
+    "objectID": "blog/DEA/index.html#running-the-model-1",
+    "href": "blog/DEA/index.html#running-the-model-1",
+    "title": "A benchmarking example in R",
+    "section": "Running the model",
+    "text": "Running the model\nThe only change compared to the first model is the difference in outputs.\n\nCodemodel_CRS &lt;- dea(mx_1, my_1, ORIENTATION = \"in\", RTS= \"crs\")"
+  },
+  {
+    "objectID": "blog/DEA/index.html#looking-at-the-output-1",
+    "href": "blog/DEA/index.html#looking-at-the-output-1",
+    "title": "A benchmarking example in R",
+    "section": "Looking at the output",
+    "text": "Looking at the output\nAgain we can extract the efficiency scores and peers\n\nCodeefficiency_scores_CRS &lt;- model_CRS$eff\n\nPeers &lt;-as.data.frame(peers(model_CRS))\n\nid &lt;- 1: 100\nd_CRS &lt;- as.data.frame(id) %&gt;%\n  mutate(efficiency_scores_CRS = efficiency_scores_CRS)\n\nd_CRS_1 &lt;- cbind(d_CRS, Peers)\n\nkable(summary(d_CRS_1))\n\n\n\n\n\n\n\n\n\n\n\nid\nefficiency_scores_CRS\npeer1\npeer2\n\n\n\n\nMin. : 1.00\nMin. :0.6016\nMin. : 1.00\nMin. : 93.00\n\n\n\n1st Qu.: 25.75\n1st Qu.:0.7206\n1st Qu.: 1.00\n1st Qu.:100.00\n\n\n\nMedian : 50.50\nMedian :0.8093\nMedian : 1.00\nMedian :100.00\n\n\n\nMean : 50.50\nMean :0.8189\nMean : 30.07\nMean : 98.28\n\n\n\n3rd Qu.: 75.25\n3rd Qu.:0.9068\n3rd Qu.: 93.00\n3rd Qu.:100.00\n\n\n\nMax. :100.00\nMax. :1.0000\nMax. :100.00\nMax. :100.00\n\n\n\nNA\nNA\nNA\nNA’s :31\n\n\n\n\n\nWe can that the efficiency scores -in general- have improved. The average score is up from around 69% to nearly 82%.\n\nCodeid &lt;- 1:100\nDiff &lt;- as.data.frame(id) %&gt;%\n  mutate(Difference = round(d_CRS_1$efficiency_scores_CRS - d_eff$efficiency_scores , 2))\n\nggplot(data = Diff, aes(x = reorder(id, Difference), y = Difference)) +\n  geom_bar(stat = \"identity\", color = \"blue\", fill = \"lightblue\") + \n  theme_minimal() +\n  xlab(\"ID\") +\n   theme(axis.text.x = element_text(angle = 90, hjust = 1, size = 5))\n\n\n\n\nWe can also have a closer look at the peers:\n\nCoded_peers_CRS &lt;- d_CRS_1%&gt;%\n  filter(efficiency_scores_CRS == 1)\n\nkable(d_peers_CRS)\n\n\n\nid\nefficiency_scores_CRS\npeer1\npeer2\n\n\n\n1\n1\n1\nNA\n\n\n50\n1\n1\n100\n\n\n93\n1\n93\nNA\n\n\n100\n1\n100\nNA\n\n\n\n\n\nWe now see more peers. In the dataframe DMU’s with id’s 1, 100 and 93 are peer. DMU with ID 50 (has also score 1, but is not a peer)"
+  },
+  {
+    "objectID": "blog/DEA/index.html#evaluation-of-the-model-1",
+    "href": "blog/DEA/index.html#evaluation-of-the-model-1",
+    "title": "A benchmarking example in R",
+    "section": "Evaluation of the model",
+    "text": "Evaluation of the model\nIn reality we cannot evulate the model, but since we work with simulated data we can see how well our model performs by comparing the “real efficiency scores” with the estimated scores from the model.\nFirst, we will add the efficiency scores to our initial dataset\n\nCoded1 &lt;- d1 %&gt;%\n  mutate(Model_CRS = model_CRS$eff)\n\n\nNow we can plot the modelled inefficiency versus the real inefficiency\n\nCodeggplot(data = d1, aes(x= Efficiency, y=Model_CRS)) + \n  geom_point(color = \"blue\") + \n  geom_abline(intercept = 0, slope = 1, color = \"red\") + \n  xlim(0.5,1) +\n  ylim(0.5,1) +\n  xlab(\"True efficiency\") +\n  ylab(\"Efficiency scores model 2\") +\n  theme_minimal()\n\n\n\n\nWe can now conclude that the model performs reasonbly well."
+  },
+  {
+    "objectID": "blog/DEA/index.html#running-the-model-2",
+    "href": "blog/DEA/index.html#running-the-model-2",
+    "title": "A benchmarking example in R",
+    "section": "Running the model",
+    "text": "Running the model\nWe only have to change the RTS (Returns to scale option) into VRS.\n\nCodemodel_VRS &lt;- dea(mx_1, my_1, ORIENTATION = \"in\", RTS= \"vrs\")\n\n\nAgain we can extract the efficiency scores and peers\n\nCodeefficiency_scores_VRS &lt;- model_VRS$eff\n\nPeers &lt;-as.data.frame(peers(model_VRS))\n\nid &lt;- 1: 100\nd_VRS &lt;- as.data.frame(id) %&gt;%\n  mutate(efficiency_scores_VRS = efficiency_scores_VRS)\n\nd_VRS_1 &lt;- cbind(d_VRS, Peers)\n\nkable(summary(d_VRS_1))\n\n\n\n\n\n\n\n\n\n\n\n\nid\nefficiency_scores_VRS\npeer1\npeer2\npeer3\n\n\n\n\nMin. : 1.00\nMin. :0.6047\nMin. : 1.00\nMin. : 18.00\nMin. : 24.00\n\n\n\n1st Qu.: 25.75\n1st Qu.:0.7433\n1st Qu.: 6.00\n1st Qu.: 20.00\n1st Qu.: 93.00\n\n\n\nMedian : 50.50\nMedian :0.8491\nMedian : 11.00\nMedian : 50.00\nMedian : 93.00\n\n\n\nMean : 50.50\nMean :0.8413\nMean : 22.33\nMean : 57.78\nMean : 92.91\n\n\n\n3rd Qu.: 75.25\n3rd Qu.:0.9523\n3rd Qu.: 26.00\n3rd Qu.: 89.00\n3rd Qu.:100.00\n\n\n\nMax. :100.00\nMax. :1.0000\nMax. :100.00\nMax. :100.00\nMax. :100.00\n\n\n\nNA\nNA\nNA\nNA’s :13\nNA’s :34\n\n\n\n\n\nThe score is slightly higher than under CRS (from approx 82% to 84%)\nWe can also have a closer look at the peers:\n\nCoded_peers_VRS &lt;- d_VRS_1%&gt;%\n  filter(efficiency_scores_VRS == 1)\n\nkable(d_peers_VRS)\n\n\n\nid\nefficiency_scores_VRS\npeer1\npeer2\npeer3\n\n\n\n1\n1\n1\nNA\nNA\n\n\n6\n1\n6\nNA\nNA\n\n\n11\n1\n11\nNA\nNA\n\n\n18\n1\n18\nNA\nNA\n\n\n20\n1\n20\nNA\nNA\n\n\n24\n1\n24\nNA\nNA\n\n\n26\n1\n26\nNA\nNA\n\n\n50\n1\n50\nNA\nNA\n\n\n74\n1\n74\nNA\nNA\n\n\n87\n1\n87\nNA\nNA\n\n\n89\n1\n89\nNA\nNA\n\n\n93\n1\n93\nNA\nNA\n\n\n100\n1\n100\nNA\nNA\n\n\n\n\n\nWe see now much more firms with score 1, being their own peers."
+  },
+  {
+    "objectID": "blog/DEA/index.html#evaluation-of-the-model-2",
+    "href": "blog/DEA/index.html#evaluation-of-the-model-2",
+    "title": "A benchmarking example in R",
+    "section": "Evaluation of the model",
+    "text": "Evaluation of the model\nWe can add the efficiency scores to our initial model\n\nCoded1 &lt;- d1 %&gt;%\n  mutate(Model_VRS = model_VRS$eff)\n\n\nNow we can plot the modelled inefficiency versus the real inefficiency\n\nCodeggplot(data = d1, aes(x= Efficiency, y=Model_VRS)) + \n  geom_point(color = \"blue\") + \n  geom_abline(intercept = 0, slope = 1, color = \"red\") + \n  xlim(0.4,1) +\n  ylim(0.4,1) +\n  xlab(\"True efficiency\") +\n  ylab(\"Efficiency scores model 3\") +\n  theme_minimal()\n\n\n\n\nAs we see, in general firms improved (a bit). Especially large or small firms will be efficient be default.\nPlease note:\n\nVRS is always beneficial to the DMU’s\nThe returns to scale choice may depend on:\n\nunderlying technology\npossibility for firms to adjust their scale (by merging or splitting up)"
+  },
+  {
+    "objectID": "blog/Poweranalysis/index.html",
+    "href": "blog/Poweranalysis/index.html",
+    "title": "Bayesian Power Analyse",
+    "section": "",
+    "text": "Insurance company VGZ and some general practitioners from the care group Syntein are starting an experimental form of financing that aligns with working according to the principles of Positive Health. The intervention practices will be funded through a complete subscription-based financing model in the experiment. We expect that these practices will have a lower number of referrals to secondary care compared to the control practices designated for this study. In this document, we explain how we will determine the effect of the intervention through Bayesian analysis, despite having a relatively limited number of intervention practices. We begin by explaining the principles of Bayesian statistics and then show step by step how we construct the data and analysis. We visualize the results and demonstrate how they change with different premises. The installation instructions describe how you can reproduce this document yourself. This blog only describes the analyses; the broader research design will outlined in a separate document.\nNote: This research follows up on a previous experiment where only the general practice in Afferden was funded through a complete subscription fee. In this blog, we sometimes refer to the findings of this experiment. The research results are published here. This blog is also published in Dutch on the NZa github website."
+  },
+  {
+    "objectID": "blog/Poweranalysis/index.html#generating-base-data-based-on-parameters",
+    "href": "blog/Poweranalysis/index.html#generating-base-data-based-on-parameters",
+    "title": "Bayesian Power Analyse",
+    "section": "Generating base data based on parameters",
+    "text": "Generating base data based on parameters\nWe use the control practices from the previous study to generate the data for this simulation. These practices had about 0.35 to 0.45 referrals per enrolled patient, with a standard deviation of 0.02. Based on these parameters, we generate a dataset that serves as our “base data.” The control practices receive a random number of referrals between 0.37 and 0.43. The intervention practices receive a fixed number of 0.40 referrals. By maintaining a fixed value for the intervention practices, we can easily relate the effect to the starting value later on."
+  },
+  {
+    "objectID": "blog/Poweranalysis/index.html#adding-an-effect",
+    "href": "blog/Poweranalysis/index.html#adding-an-effect",
+    "title": "Bayesian Power Analyse",
+    "section": "Adding an effect",
+    "text": "Adding an effect\nTo this base data, we manually add an effect to simulate the intervention. For example, we add an effect of -0.04 (the number of referrals per patient decreases by 0.04). Relating this to the starting value of the intervention practices (0.4), you see a decrease of 10% (0.04/0.4)."
+  },
+  {
+    "objectID": "blog/Poweranalysis/index.html#bayesian-regression",
+    "href": "blog/Poweranalysis/index.html#bayesian-regression",
+    "title": "Bayesian Power Analyse",
+    "section": "Bayesian regression",
+    "text": "Bayesian regression\nAfter introducing the effect, we perform a Bayesian regression on the dataset. Based on the results of the regression, we can assess how accurately and precisely we have estimated the effect, given the inherent noise and variability in the data.\nThe participating parties in the study can choose to achieve a certain minimum effect (and decide, for example, to stop the experiment if this is not achieved). Therefore, we also show how the results can be used to determine the certainty around achieving this minimum effect. The likelihood of achieving the minimum effect (given the inherent noise and variability in the data) is represented in a probability distribution."
+  },
+  {
+    "objectID": "blog/Poweranalysis/index.html#repeated-analysis",
+    "href": "blog/Poweranalysis/index.html#repeated-analysis",
+    "title": "Bayesian Power Analyse",
+    "section": "Repeated Analysis",
+    "text": "Repeated Analysis\nWe do not perform the regression just once, but repeat it several times. With each repetition (iteration), we generate a new dataset, while continuing to work with the same parameters. This gives us a series of results that illustrate the stability and reproducibility of our analysis. The repetitions help us understand how effective and reliable our analysis is at estimating effects and assessing probabilities, even in situations where limited data points are available."
+  },
+  {
+    "objectID": "blog/Poweranalysis/index.html#final-note",
+    "href": "blog/Poweranalysis/index.html#final-note",
+    "title": "Bayesian Power Analyse",
+    "section": "Final Note",
+    "text": "Final Note\nFinally, we want to note that we have written this simulation for the total number of referrals because we had information on this from previous research. We expect that other interesting outcomes (for example, subcategories of referrals) will contain much more noise than the total number of referrals. However, we can only conduct a proper simulation when we have the referrals from the relevant practices."
+  },
+  {
+    "objectID": "blog/Poweranalysis/index.html#number-of-practices",
+    "href": "blog/Poweranalysis/index.html#number-of-practices",
+    "title": "Bayesian Power Analyse",
+    "section": "number of practices",
+    "text": "number of practices\n\nCode# Choose number of intervention practices\n\nIP &lt;- 2\n\n# Choose number of control practices\n\nCP &lt;- 3\n\n\nWe have 2 intervention and 3 control practices. This number can be adjusted in the “number of practices” code block above. For the base data generated below, we opt for an average number of referrals per patient of about 0.4 with a standard deviation of 0.02. These parameters are based on the control practices from the previous study in Afferden. Note, however, that, in the previous study, we only had annual data; these data are generated per quarter. It is not entirely clear whether the variation on a quarterly basis is larger.\nNote: To conduct the analysis, we need:\n\nNumber of referrals per practice (from the healthcare domain)\nNumber of registered patients per quarter"
+  },
+  {
+    "objectID": "blog/Poweranalysis/index.html#trend-over-time",
+    "href": "blog/Poweranalysis/index.html#trend-over-time",
+    "title": "Bayesian Power Analyse",
+    "section": "Trend Over Time",
+    "text": "Trend Over Time\n\nCode# Choose a time trend (structural increase/decrease per quarter) that applies to all practices.\n\nTimeTrend &lt;- -0.01\n\n\nIt’s entirely possible that there’s a natural trend (independent of the intervention) in the number of referrals. In the data from the control practices in the Afferden study, it seems that referrals across all practices slightly decrease over time. A time trend might complicate estimating the effect, which is why we’ve also introduced a time trend. This time trend can be adjusted in the code block above."
+  },
+  {
+    "objectID": "blog/Poweranalysis/index.html#effect-size-and-minimum-effect",
+    "href": "blog/Poweranalysis/index.html#effect-size-and-minimum-effect",
+    "title": "Bayesian Power Analyse",
+    "section": "Effect size and minimum Effect",
+    "text": "Effect size and minimum Effect\n\nCode# Choose effect size\n\nEffect &lt;- -0.04   # 0.04 represents approximately a 10% decrease in referrals\n\n# Choose minimum effect\n\nMinimumEffect &lt;- 0\n\n# Calculate the percentage reduction in referrals for the text\n\nRE &lt;- (Effect / 0.4) * 100\n\n\nWe manually add an effect to our data. In this analysis, we have added an effect of approximately -10 in referrals. The figure we should obtain from our analysis is -0.04. This effect can be adjusted larger or smaller in the code block above.\nAdditionally, we can determine a minimum effect. In this analysis, the minimum effect we wish to observe is set at 0.\nIn our simulation, we obtain the full probability distribution of effect sizes. Generally (but not necessarily), these probability distributions are reasonably normally distributed. We can then estimate the average effect. This estimate should approximately match the effect we have introduced in our simulation. In this case, the average should be close to -0.04. Since we have a full probability distribution, we can also say something about the likelihood of achieving a certain minimum effect.\nIf we set the minimum effect at 0, we can say based on the probability distribution: There is an x% chance that the number of referrals has decreased."
+  },
+  {
+    "objectID": "blog/Poweranalysis/index.html#aantal-simulaties",
+    "href": "blog/Poweranalysis/index.html#aantal-simulaties",
+    "title": "Bayesian Power Analyse",
+    "section": "Aantal simulaties",
+    "text": "Aantal simulaties\n\nCode# Choose the number of regressions to be run\n\n\nIterations &lt;- 20\n\n\nFinally, we can determine the number of regressions by adjusting the number of Iterations in the code block above. Running regressions is time-consuming and memory-intensive, and the plots of the outcomes take up a lot of space. Therefore, it is advised not to set the number of iterations too high. In this analysis, the number of regressions has been set to 20."
+  },
+  {
+    "objectID": "blog/Poweranalysis/index.html#base-data",
+    "href": "blog/Poweranalysis/index.html#base-data",
+    "title": "Bayesian Power Analyse",
+    "section": "Base data",
+    "text": "Base data\n\nCodeset.seed(123) # For reproducibility\n\n# Create a tibble with practice identifiers and initial referral rates\ndf1 &lt;- tibble(id = 1:(IP + CP)) %&gt;% \n  # Assign intervention or control status to practices\n  mutate(Intervention = ifelse(test = id &lt;= 2, yes = 1, no = 0)) %&gt;%\n  # Set up average referrals per enrolled patient for the first quarter (the base)\n  # To keep the evaluation straightforward, intervention practices receive the same base percentage\n  mutate(Q1 = c(rep(40, each = IP), sample(x = 37:43, size = 3)) / 100)\n\n\nIn the code snippet above, the base data are generated. Practices are categorized as either intervention or control practices, and for each practice, the average number of referrals for the first quarter is set. We will later simulate 11 additional quarters, with the intervention starting in quarter 9."
+  },
+  {
+    "objectID": "blog/Poweranalysis/index.html#simulation",
+    "href": "blog/Poweranalysis/index.html#simulation",
+    "title": "Bayesian Power Analyse",
+    "section": "Simulation",
+    "text": "Simulation\n\nCode# Here we simulate (based on the chosen number of regressions) data repeatedly and then run regressions.\n\n\n\nfullrun &lt;- 0\n\nif(fullrun){\n  \n# create empty vectors for estimates and CIs\n  \nnames &lt;- c(\"9\", \"10\", \"11\", \"12\")\nvar_lst &lt;- sapply(paste0(\"Estimate_\", names), function(x) assign(x, NULL))\nvar_lst2 &lt;-sapply(paste0(\"upper_\", names), function(x) assign(x,NULL))\nvar_lst3 &lt;-sapply(paste0(\"lower_\", names), function(x) assign(x,NULL))\n\nlist2env(var_lst, .GlobalEnv)\nlist2env(var_lst2, .GlobalEnv)\nlist2env(var_lst3, .GlobalEnv)\n\n# create an empty tibble for posterior\n\nsamples &lt;- tibble()\n\n# starting the for-loop\n\nfor(i in 1:Iterations){\n  \n#  # varying set.seeds for reproducibility\n\nset.seed(1000 + i * 10)\n\n # create a tibble with other quarters\n    df &lt;- df1 %&gt;%\n      mutate(Q2 = rnorm(n = 5, mean = (1 + TimeTrend) * Q1, sd = 0.02),\n             Q3 = rnorm(n = 5, mean = (1 + TimeTrend)^2 * Q1, sd = 0.02),\n             Q4 = rnorm(n = 5, mean = (1 + TimeTrend)^3 * Q1, sd = 0.02),\n             Q5 = rnorm(n = 5, mean = (1 + TimeTrend)^4 * Q1, sd = 0.02),\n             Q6 = rnorm(n = 5, mean = (1 + TimeTrend)^5 * Q1, sd = 0.02),\n             Q7 = rnorm(n = 5, mean = (1 + TimeTrend)^6 * Q1, sd = 0.02),\n             Q8 = rnorm(n = 5, mean = (1 + TimeTrend)^7 * Q1, sd = 0.02),\n             # the intervention begins now\n             Q9 = rnorm(n = 5, mean = (1 + TimeTrend)^8 * Q1, sd = 0.02) + Effect * Intervention,\n             Q10 = rnorm(n = 5, mean = (1 + TimeTrend)^9 * Q1, sd = 0.02) + Effect * Intervention,\n             Q11 = rnorm(n = 5, mean = (1 + TimeTrend)^10 * Q1, sd = 0.02) + Effect * Intervention,\n             Q12 = rnorm(n = 5, mean = (1 + TimeTrend)^11 * Q1, sd = 0.02) + Effect * Intervention) %&gt;%\n      # make data long\n      pivot_longer(cols = Q1:Q12, names_to = \"Quarter\", \n                      values_to = \"Referrals\") %&gt;%\n      # make quarter numeric to create the intervention variable\n      mutate(Quarter = str_sub(Quarter, start = 2)) %&gt;%\n      # create our effect variables\n      mutate(DiD_9 = ifelse(test = as.numeric(Quarter) == 9 & Intervention == 1, \n                             yes = 1,\n                             no = 0)) %&gt;%\n      mutate(DiD_10 = ifelse(test = as.numeric(Quarter) == 10 & Intervention == 1, \n                             yes = 1,\n                             no = 0)) %&gt;%\n      mutate(DiD_11 = ifelse(test = as.numeric(Quarter) == 11 & Intervention == 1, \n                             yes = 1,\n                             no = 0)) %&gt;%\n      mutate(DiD_12 = ifelse(test = as.numeric(Quarter) == 12 & Intervention == 1, \n                             yes = 1,\n                             no = 0)) %&gt;%\n      # turn quarter into a factor\n      mutate(Quarter = as.factor(Quarter))\n    \n# Formula\n\nFormula &lt;- \"Referrals ~ 0 + Intercept + id + Quarter + DiD_9 + DiD_10 + DiD_11 + DiD_12\"\n\n# Priors\n\n## non informativce priors\n\nprior1 &lt;- c(set_prior(\"normal(0.4, 0.04)\", class = \"b\", coef = \"Intercept\"),\n            set_prior(\"normal(0, 0.05)\", class = \"b\", coef = \"DiD_9\"),\n            set_prior(\"normal(0, 0.05)\", class = \"b\", coef = \"DiD_10\"),\n            set_prior(\"normal(0, 0.05)\", class = \"b\", coef = \"DiD_11\"),\n            set_prior(\"normal(0, 0.05)\", class = \"b\", coef = \"DiD_12\"))\n\n\nreg1 &lt;- brm(\n  formula = Formula,\n  prior = prior1,\n  warmup = 1000,\n  iter = 2500,\n  data = df,\n  chains = 4, \n  cores = 6,\n  init = \"random\",\n  control = list(adapt_delta = 0.8, max_treedepth = 12),\n  seed = 123,\n  backend = \"cmdstanr\",\n  )\n\n\n\n# Fill Empty Vectors with Summary Numbers (Estimate and CI)\n\n\nEstimate_9[i] = fixef(reg1)[14,1]\nlower_9[i] = fixef(reg1)[14,3]\nupper_9[i] = fixef(reg1)[14,4]\n\nEstimate_10[i] = fixef(reg1)[15,1]\nlower_10[i] = fixef(reg1)[15,3]\nupper_10[i] = fixef(reg1)[15,4]\n\nEstimate_11[i] = fixef(reg1)[16,1]\nlower_11[i] = fixef(reg1)[16,3]\nupper_11[i] = fixef(reg1)[16,4]\n\nEstimate_12[i] = fixef(reg1)[17,1]\nlower_12[i] = fixef(reg1)[17,3]\nupper_12[i] = fixef(reg1)[17,4]\n\n## Create a tibble for each quarter\n\n\nResults_9 &lt;- tibble(Estimate = Estimate_9, lower = lower_9, upper = upper_9) %&gt;%\n            mutate(Quarter = \"Quarter 9\")\n\nResults_10 &lt;- tibble(Estimate = Estimate_10, lower = lower_10, upper = upper_10) %&gt;%\n            mutate(Quarter = \"Quarter 10\")\n\nResults_11 &lt;- tibble(Estimate = Estimate_11, lower = lower_11, upper = upper_11) %&gt;%\n            mutate(Quarter = \"Quarter 11\")\n\nResults_12 &lt;- tibble(Estimate = Estimate_12, lower = lower_12, upper = upper_12) %&gt;%\n            mutate(Quarter = \"Quarter 12\")\n\n## Combine the Tibbles\nResults = rbind(Results_9, Results_10, Results_11, Results_12)\n\n\n# posterior draws\n\nsamples_temp &lt;- tibble(as_draws_df(reg1)) %&gt;%\n  mutate(Run = as.factor(i))\n\nsamples &lt;- samples %&gt;%\n  rbind(samples_temp)\n\n}\n\nsaveRDS(Results, \"Results.RDS\")\nsaveRDS(samples, \"samples.RDS\")\n\n\n} else {\n\nResults &lt;- readRDS(\"Results.RDS\")\nsamples &lt;- readRDS(\"samples.RDS\")\n\n  \n}\n\n\nIn the code above, we repeatedly carry out simulations, each time generating slightly different data. We simulate the average referrals per registered patient for quarters 2 through 12, introducing some random variation and a time trend around the number applicable for the first quarter. This added variation (referred to as noise and set at 0.02) amounts to about 5% of the number of referrals and is based on data from control practices in the Afferden study.\nAfterwards, we perform Bayesian regression on each simulated dataset and save the results. In executing these regressions, we start with an initial and somewhat conservative expectation that the intervention has no effect. However, we allow for uncertainty. Therefore, we set an effect whose probability distribution is normally distributed around 0, with a standard deviation of 0.05. This implies we expect about a 95% chance that the effect falls between -0.1 and 0.1. This translates into an effect of approximately plus or minus 25% on the number of referrals. Very large effects (such as those observed in previous research in Afferden) are considered very unlikely with this initial expectation. For completeness, we have also tested an alternative initial expectation, where we expect a large effect. This has only a limited impact on the results. See the following section on the influence of a different prior."
   }
 ]

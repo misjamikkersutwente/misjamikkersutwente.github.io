@@ -1,0 +1,359 @@
+---
+title: "A benchmarking example in R"
+authors:
+  - name: Misja Mikkers
+    department: Health Technology & Services Research
+    affiliation: University of Twente
+    location: Enschede, the Netherlands
+    email: m.c.mikkers@utwente.nl
+  - name: Victoria Shestalova
+    department: Economic and Medical Bureau
+    affiliation: Dutch Healthcare Authority (NZa)
+    location: Utrecht, the Netherlands
+    email: vshestalova@nza.nl
+description: "The aim of this example is to learn how to apply DEA and to demonstrate that DEA is capable to reveal inefficiency. Therefore, we will first simulate our dataset of 100 courts, based on a certain assumption on inefficiency of each court (we will therefore know the'true efficiency'). And then we will use DEA to determine efficiency by means of DEA. By comparing DEA results to the assumed efficiency, we will establish whether DEA is capable to reveal true efficiency."
+date: 08-21-2021
+categories: 
+  - DEA
+draft: false
+---
+
+
+# Introduction
+
+In this post we will give you an example of a DEA benchmark performed in R. We will do this with simulated data.
+
+In this case study we consider 100 courts. Courts handle 'disputes', which result in cases or settlements. Hence, settlements and cases are (perfect) substitutes. On the input side, courts incur costs. We consider several DEA models for benchmarking courts. 
+The aim of this example is to learn how to apply DEA and to demonstrate that DEA is capable to reveal inefficiency. Therefore, we will first simulate our dataset of 100 courts, based on a certain assumption on inefficiency of each court (we will therefore know the'true efficiency'). And then we will use DEA to determine efficiency by means of DEA. By comparing DEA results to the assumed efficiency, we will establish whether DEA is capable to reveal true efficiency.
+
+# Packages
+
+```{r, message=FALSE , warning=FALSE}
+library(tidyverse) # for manipulating data and plots
+library(Benchmarking) # for DEA
+library(PerformanceAnalytics) # for correlation plots
+library(knitr) # for tables
+```
+
+# Simulation of data
+
+We will first simulate some simple data of 100 Courts. The courts produce Solutions to disputes ("production"), which are "Cases" and "Settlements"  
+
+ID: just an identification number that we will not use:
+Total_Eff_Cost : Is the "real efficient total cost", not observed in practice
+Efficiency: This is the "real efficiency score", not observed in practice. Because we want to have some efficient firms for this examples we make sure that firms with id's 1, 50 and 100 become efficient.
+Total cost: The total cost we observe and can use in our benchmark as input
+Cases: The number of verdicts written by each court
+Settlements: Cases that did not come to a verdict (e.g. plea guilty or compromise)
+Production: The total of cases and settlements
+
+The data is simulated so that:
+
+- all inefficiency leads to higher cost
+- production is a (lineair) function of total efficient cost
+- which means we have chosen for a CRS technology (see discussion later)
+- settlements and cases are subsitutes
+ 
+
+```{r}
+
+set.seed(123)
+id <- 1:100 
+d1 <- as.data.frame(id) %>%
+  mutate(Total_Eff_Cost = round(runif(100, 100, 500),0)) %>%
+  mutate(Efficiency_1 = round(runif(100, 0.6, 1 ),2))  %>%
+  mutate(Efficiency = ifelse(id == 1 | id ==50 | id ==100, 1, Efficiency_1)) %>%
+  mutate(TC = round(Total_Eff_Cost * (1/Efficiency), 0)) %>%
+  mutate(Production = round(15 * Total_Eff_Cost,0)) %>%
+  mutate(Share_cases = round(runif(100, 0.4, 0.7),2)) %>%
+  mutate(Cases = round(Share_cases * Production, 0)) %>%
+  mutate(Settlements = round((1-Share_cases) * Production, 0))
+  
+
+```
+
+
+We can inspect the observable data:
+
+```{r}
+d_CC <- d1 %>%
+  select(TC, Cases, Settlements)
+
+suppressWarnings(chart.Correlation(d_CC))
+
+```
+
+# Model 1 with 1 input (TC) and 1 output (Cases)
+
+For this model we chose to run a CRS model with 1 input: TC (Total Cost) and 1 output (Cases).
+
+Since Settlements and Cases are subsitutes, firms with relatively more Settlements should score worse.
+
+## Select our inputs and outputs
+
+The `Benchmarking` package needs inputs and outputs to be matrices. As long as we want 1 input and 1 ouput, we just need to select the relevant variables.
+
+
+```{r}
+mx <- d1 %>%
+  select(TC)
+my <- d1 %>%
+  select(Cases)
+
+```
+
+## Running the model
+
+Now we can run the DEA model:
+
+We need to chose the inputs and the outputs (as we have done above), the orientation (since we are interested in input minimization we chose "in") and returns to scale (CRS) 
+
+```{r}
+model_1 <- dea(mx, my, ORIENTATION = "in", RTS= "crs")
+```
+
+
+## Looking at the output
+
+The package `Benchmarking` produces a list with some information.
+
+Most interesting information are the scores and the peers.
+
+```{r}
+efficiency_scores <- model_1$eff
+
+d_eff <- as.data.frame(efficiency_scores) %>%
+  mutate(Peers = peers(model_1))
+
+kable(summary(d_eff))
+
+```
+
+As we can see, DMU with id 100 is peer for all firms.
+
+## Evaluation of the model
+
+In reality we cannot evulate the model, but since we work with simulated data we can see how well our model performs by comparing the "real efficiency scores" with the estimated scores from the model.
+
+First, we will add the efficiency scores to our initial dataset
+
+```{r}
+d1 <- d1 %>%
+  mutate(Model_1 = model_1$eff)
+
+
+```
+
+Now we can plot the modelled inefficiency versus the real inefficiency
+
+```{r}
+ggplot(data = d1, aes(x= Efficiency, y=Model_1)) + 
+  geom_point(color = "blue") + 
+  geom_abline(intercept = 0, slope = 1, color = "red") + 
+  xlim(0.4,1) +
+  ylim(0.4,1) +
+  xlab("True efficiency") +
+  ylab("Efficiency scores model 1") +
+  theme_minimal()
+
+```
+
+
+We can conclude that our model does not perform very good:
+
+1. most efficiency scores are underestimated
+2. a few are overstated
+
+
+The reason is that we only took 1 output, while in our simulated dataset Courts produced 2 outputs.
+
+# Full model (1 input, 2 outputs) CRS
+
+## Select our inputs and outputs
+
+We will run a model with 1 input (TC) and 2 outputs (Cases and Settlements). First we have to select the right variables as input and outputs. Please note: since we have 2 chosen 2 outputs, we should explicitly transform the dataframe into a matrix.
+
+```{r}
+mx_1 <- d1 %>%
+  select(TC)
+
+my_1a <- d1 %>%
+  select(Cases, Settlements)
+
+my_1 <- as.matrix(my_1a)
+
+```
+
+
+
+## Running the model
+
+
+The only change compared to the first model is the difference in outputs.
+
+```{r}
+model_CRS <- dea(mx_1, my_1, ORIENTATION = "in", RTS= "crs")
+```
+
+## Looking at the output
+
+Again we can extract the efficiency scores and peers
+
+```{r}
+efficiency_scores_CRS <- model_CRS$eff
+
+Peers <-as.data.frame(peers(model_CRS))
+
+id <- 1: 100
+d_CRS <- as.data.frame(id) %>%
+  mutate(efficiency_scores_CRS = efficiency_scores_CRS)
+
+d_CRS_1 <- cbind(d_CRS, Peers)
+
+kable(summary(d_CRS_1))
+
+
+```
+
+We can that the efficiency scores -in general- have improved. The average score is up from around 69% to nearly 82%. 
+
+
+```{r}
+id <- 1:100
+Diff <- as.data.frame(id) %>%
+  mutate(Difference = round(d_CRS_1$efficiency_scores_CRS - d_eff$efficiency_scores , 2))
+
+ggplot(data = Diff, aes(x = reorder(id, Difference), y = Difference)) +
+  geom_bar(stat = "identity", color = "blue", fill = "lightblue") + 
+  theme_minimal() +
+  xlab("ID") +
+   theme(axis.text.x = element_text(angle = 90, hjust = 1, size = 5))
+
+```
+
+
+We can also have a closer look at the peers:
+
+```{r}
+d_peers_CRS <- d_CRS_1%>%
+  filter(efficiency_scores_CRS == 1)
+
+kable(d_peers_CRS)
+
+```
+
+We now see more peers. In the dataframe DMU's with id's 1, 100 and 93 are peer. DMU with ID 50 (has also score 1, but is not a peer)
+
+## Evaluation of the model
+
+In reality we cannot evulate the model, but since we work with simulated data we can see how well our model performs by comparing the "real efficiency scores" with the estimated scores from the model.
+
+First, we will add the efficiency scores to our initial dataset
+
+
+```{r}
+d1 <- d1 %>%
+  mutate(Model_CRS = model_CRS$eff)
+```
+
+
+
+Now we can plot the modelled inefficiency versus the real inefficiency
+
+```{r}
+ggplot(data = d1, aes(x= Efficiency, y=Model_CRS)) + 
+  geom_point(color = "blue") + 
+  geom_abline(intercept = 0, slope = 1, color = "red") + 
+  xlim(0.5,1) +
+  ylim(0.5,1) +
+  xlab("True efficiency") +
+  ylab("Efficiency scores model 2") +
+  theme_minimal()
+
+```
+
+We can now conclude that the model performs reasonbly well.
+
+
+
+# Model 2 VRS
+
+We will now estimate the same model with VRS.
+
+## Running the model
+
+We only have to change the RTS (Returns to scale option) into VRS.
+
+```{r}
+model_VRS <- dea(mx_1, my_1, ORIENTATION = "in", RTS= "vrs")
+```
+
+Again we can extract the efficiency scores and peers
+
+```{r}
+efficiency_scores_VRS <- model_VRS$eff
+
+Peers <-as.data.frame(peers(model_VRS))
+
+id <- 1: 100
+d_VRS <- as.data.frame(id) %>%
+  mutate(efficiency_scores_VRS = efficiency_scores_VRS)
+
+d_VRS_1 <- cbind(d_VRS, Peers)
+
+kable(summary(d_VRS_1))
+
+
+```
+
+The score is slightly higher than under CRS (from approx 82% to 84%)
+
+We can also have a closer look at the peers:
+
+```{r}
+d_peers_VRS <- d_VRS_1%>%
+  filter(efficiency_scores_VRS == 1)
+
+kable(d_peers_VRS)
+
+```
+
+We see now much more firms with score 1, being their own peers.
+
+## Evaluation of the model
+
+We can add the efficiency scores to our initial model
+
+```{r}
+d1 <- d1 %>%
+  mutate(Model_VRS = model_VRS$eff)
+```
+
+
+
+Now we can plot the modelled inefficiency versus the real inefficiency
+
+```{r}
+ggplot(data = d1, aes(x= Efficiency, y=Model_VRS)) + 
+  geom_point(color = "blue") + 
+  geom_abline(intercept = 0, slope = 1, color = "red") + 
+  xlim(0.4,1) +
+  ylim(0.4,1) +
+  xlab("True efficiency") +
+  ylab("Efficiency scores model 3") +
+  theme_minimal()
+
+```
+
+As we see, in general firms improved (a bit). Especially large or small firms will be efficient be default.
+
+Please note:
+
+- VRS is always beneficial to the DMU's
+- The returns to scale choice may depend on:
+    - underlying technology
+    - possibility for firms to adjust their scale (by merging or splitting up)
+
+
+
+

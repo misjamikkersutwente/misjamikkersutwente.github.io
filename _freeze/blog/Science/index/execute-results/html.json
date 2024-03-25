@@ -1,0 +1,14 @@
+{
+  "hash": "0dffeabf89753b56ec42758b4ec22df6",
+  "result": {
+    "markdown": "---\ntitle: \"Science\"\ndescription: \"Hier een geinige beschrijving\"\ndate: 01-01-2024\ncategories: \n  - keywords\n  - bla\n  - blabla\ndraft: false\n\n---\n\n::: {.cell}\n\n:::\n\n\n\n# Het schrijven van blogs\n\n\n## Inleiding\n\nDit is een blog over het schrijven van blogs.\n\n## Deel 1\n\nHier komt deel 1 van het blog.\n\n\n",
+    "supporting": [],
+    "filters": [
+      "rmarkdown/pagebreak.lua"
+    ],
+    "includes": {},
+    "engineDependencies": {},
+    "preserve": {},
+    "postProcess": true
+  }
+}

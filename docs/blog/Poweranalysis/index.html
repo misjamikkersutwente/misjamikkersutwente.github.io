@@ -1,0 +1,1079 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.3.450">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+<meta name="author" content="Misja Mikkers">
+<meta name="dcterms.date" content="2024-03-20">
+<meta name="description" content="This blog provides an example of conducting Bayesian power analyses, focusing on a healthcare study comparing intervention and control practices. It covers setting up simulations, generating data, adjusting for time trends, and estimating effects with Bayesian regression. Installation instructions for necessary software and R packages, alongside tips for running simulations and analyzing results, are also included.">
+<title>Misja Mikkers - Bayesian Power Analyse</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+</style>
+
+<script src="../../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../../">
+<link href="../../img/favicon.png" rel="icon" type="image/png">
+<script src="../../site_libs/quarto-html/quarto.js"></script>
+<script src="../../site_libs/quarto-html/popper.min.js"></script>
+<script src="../../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../../site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="../../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../../site_libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light"><script id="quarto-search-options" type="application/json">{
+  "location": "navbar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "end",
+  "type": "overlay",
+  "limit": 20,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+</head>
+<body class="floating nav-fixed">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top"><nav class="navbar navbar-expand-lg navbar-dark "><div class="navbar-container container-fluid">
+      <div class="navbar-brand-container">
+    <a href="../../index.html" class="navbar-brand navbar-brand-logo">
+    <img src="../../img/misja.png" alt="" class="navbar-logo"></a>
+    <a class="navbar-brand" href="../../index.html">
+    <span class="navbar-title">Misja Mikkers</span>
+    </a>
+  </div>
+            <div id="quarto-search" class="" title="Search"></div>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+  <span class="navbar-toggler-icon"></span>
+</button>
+          <div class="collapse navbar-collapse" id="navbarCollapse">
+            <ul class="navbar-nav navbar-nav-scroll me-auto">
+<li class="nav-item">
+    <a class="nav-link" href="../../blog/index.html" rel="" target="">
+ <span class="menu-text">Blog</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../../research/index.html" rel="" target="">
+ <span class="menu-text">Research</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../../teaching/index.html" rel="" target="">
+ <span class="menu-text">Teaching</span></a>
+  </li>  
+</ul>
+<ul class="navbar-nav navbar-nav-scroll ms-auto">
+<li class="nav-item compact">
+    <a class="nav-link" href="https://people.utwente.nl/m.c.mikkers" rel="" target=""><i class="bi bi-folder-symlink" role="img">
+</i> 
+ <span class="menu-text"></span></a>
+  </li>  
+  <li class="nav-item compact">
+    <a class="nav-link" href="https://mastodon.social/@mcmikkers" rel="" target=""><i class="bi bi-mastodon" role="img">
+</i> 
+ <span class="menu-text"></span></a>
+  </li>  
+  <li class="nav-item compact">
+    <a class="nav-link" href="https://www.linkedin.com/in/misja-m-413b924/" rel="" target=""><i class="bi bi-linkedin" role="img">
+</i> 
+ <span class="menu-text"></span></a>
+  </li>  
+  <li class="nav-item compact">
+    <a class="nav-link" href="mailto:m.c.mikkers@utwente.nl" rel="" target=""><i class="bi bi-envelope" role="img" aria-label="email">
+</i> 
+ <span class="menu-text"></span></a>
+  </li>  
+</ul>
+<div class="quarto-navbar-tools">
+</div>
+          </div> <!-- /navcollapse -->
+      </div> <!-- /container-fluid -->
+    </nav></header><!-- content --><div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal sidebar-navigation floating overflow-auto"><nav id="TOC" role="doc-toc" class="toc-active"><h2 id="toc-title">Contents</h2>
+   
+  <ul>
+<li><a href="#introduction" id="toc-introduction" class="nav-link active" data-scroll-target="#introduction">Introduction</a></li>
+  <li><a href="#the-principles-of-bayesian-analysis" id="toc-the-principles-of-bayesian-analysis" class="nav-link" data-scroll-target="#the-principles-of-bayesian-analysis">The principles of Bayesian analysis</a></li>
+  <li>
+<a href="#how-does-the-simulation-work" id="toc-how-does-the-simulation-work" class="nav-link" data-scroll-target="#how-does-the-simulation-work">How does the simulation work?</a>
+  <ul class="collapse">
+<li><a href="#generating-base-data-based-on-parameters" id="toc-generating-base-data-based-on-parameters" class="nav-link" data-scroll-target="#generating-base-data-based-on-parameters">Generating base data based on parameters</a></li>
+  <li><a href="#adding-an-effect" id="toc-adding-an-effect" class="nav-link" data-scroll-target="#adding-an-effect">Adding an effect</a></li>
+  <li><a href="#bayesian-regression" id="toc-bayesian-regression" class="nav-link" data-scroll-target="#bayesian-regression">Bayesian regression</a></li>
+  <li><a href="#repeated-analysis" id="toc-repeated-analysis" class="nav-link" data-scroll-target="#repeated-analysis">Repeated Analysis</a></li>
+  <li><a href="#final-note" id="toc-final-note" class="nav-link" data-scroll-target="#final-note">Final Note</a></li>
+  </ul>
+</li>
+  <li>
+<a href="#what-we-can-modify-in-this-simulation" id="toc-what-we-can-modify-in-this-simulation" class="nav-link" data-scroll-target="#what-we-can-modify-in-this-simulation">What we can modify in this simulation</a>
+  <ul class="collapse">
+<li><a href="#number-of-practices" id="toc-number-of-practices" class="nav-link" data-scroll-target="#number-of-practices">number of practices</a></li>
+  <li><a href="#trend-over-time" id="toc-trend-over-time" class="nav-link" data-scroll-target="#trend-over-time">Trend Over Time</a></li>
+  <li><a href="#effect-size-and-minimum-effect" id="toc-effect-size-and-minimum-effect" class="nav-link" data-scroll-target="#effect-size-and-minimum-effect">Effect size and minimum Effect</a></li>
+  <li><a href="#aantal-simulaties" id="toc-aantal-simulaties" class="nav-link" data-scroll-target="#aantal-simulaties">Aantal simulaties</a></li>
+  </ul>
+</li>
+  <li>
+<a href="#generating-base-data-and-performing-regressions" id="toc-generating-base-data-and-performing-regressions" class="nav-link" data-scroll-target="#generating-base-data-and-performing-regressions">Generating Base Data and Performing Regressions</a>
+  <ul class="collapse">
+<li><a href="#base-data" id="toc-base-data" class="nav-link" data-scroll-target="#base-data">Base data</a></li>
+  <li><a href="#simulation" id="toc-simulation" class="nav-link" data-scroll-target="#simulation">Simulation</a></li>
+  </ul>
+</li>
+  <li><a href="#visualizations-of-the-estimates" id="toc-visualizations-of-the-estimates" class="nav-link" data-scroll-target="#visualizations-of-the-estimates">Visualizations of the Estimates</a></li>
+  <li><a href="#the-influence-of-different-initial-expectations-priors" id="toc-the-influence-of-different-initial-expectations-priors" class="nav-link" data-scroll-target="#the-influence-of-different-initial-expectations-priors">The Influence of Different Initial Expectations (Priors)</a></li>
+  <li><a href="#installation-instructions" id="toc-installation-instructions" class="nav-link" data-scroll-target="#installation-instructions">Installation Instructions</a></li>
+  </ul></nav>
+</nav><div id="quarto-sidebar-glass" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar,#quarto-sidebar-glass"></div>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content"><header id="title-block-header" class="quarto-title-block default"><div class="quarto-title">
+<h1 class="title">Bayesian Power Analyse</h1>
+  <div class="quarto-categories">
+    <div class="quarto-category">Bayesian Statistics</div>
+    <div class="quarto-category">Power Analysis</div>
+    <div class="quarto-category">Difference in Difference</div>
+  </div>
+  </div>
+
+<div>
+  <div class="description">
+    This blog provides an example of conducting Bayesian power analyses, focusing on a healthcare study comparing intervention and control practices. It covers setting up simulations, generating data, adjusting for time trends, and estimating effects with Bayesian regression. Installation instructions for necessary software and R packages, alongside tips for running simulations and analyzing results, are also included.
+  </div>
+</div>
+
+<div class="quarto-title-meta-author">
+  <div class="quarto-title-meta-heading">Authors</div>
+  <div class="quarto-title-meta-heading">Affiliations</div>
+  
+    <div class="quarto-title-meta-contents">
+    <p class="author">Misja Mikkers </p>
+  </div>
+    <div class="quarto-title-meta-contents">
+        <p class="affiliation">
+            University of Twente
+          </p>
+      </div>
+      <div class="quarto-title-meta-contents">
+    <p class="author">Tessa Voesenek </p>
+  </div>
+    <div class="quarto-title-meta-contents">
+        <p class="affiliation">
+            Dutch Healthcare Authority (NZa)
+          </p>
+      </div>
+    </div>
+
+<div class="quarto-title-meta">
+
+      
+    <div>
+    <div class="quarto-title-meta-heading">Published</div>
+    <div class="quarto-title-meta-contents">
+      <p class="date">March 20, 2024</p>
+    </div>
+  </div>
+  
+    
+  </div>
+  
+
+</header><section id="introduction" class="level1"><h1>Introduction</h1>
+<p>Insurance company VGZ and some general practitioners from the care group Syntein are starting an experimental form of financing that aligns with working according to the principles of <a href="https://www.iph.nl/en/">Positive Health</a>. The intervention practices will be funded through a complete subscription-based financing model in the experiment. We expect that these practices will have a lower number of referrals to secondary care compared to the control practices designated for this study. In this document, we explain how we will determine the effect of the intervention through Bayesian analysis, despite having a relatively limited number of intervention practices. We begin by explaining the principles of Bayesian statistics and then show step by step how we construct the data and analysis. We visualize the results and demonstrate how they change with different premises. The installation instructions describe how you can reproduce this document yourself. This blog only describes the analyses; the broader research design will outlined in a separate document.</p>
+<p>Note: This research follows up on a previous experiment where only the general practice in Afferden was funded through a complete subscription fee. In this blog, we sometimes refer to the findings of this experiment. The research results are <a href="https://research.tilburguniversity.edu/en/publications/beyond-the-clock-exploring-the-causal-relationship-between-genera">published here</a>. This blog is also published in Dutch on the <a href="https://github.com/nzanl/experiment_bekostiging_huisartsen_2023">NZa github website</a>.</p>
+</section><section id="the-principles-of-bayesian-analysis" class="level1"><h1>The principles of Bayesian analysis</h1>
+<p>We employ the principles of Bayesian analysis to assess the effectiveness of a subscription-based financing model at a number of Syntein general practices. We work with a limited number of data points. Unlike traditional significance tests, which focus on determining whether an effect is statistically significant, our Bayesian analysis aims to estimate the probability that the intervention actually has a specific effect.</p>
+<p>In Bayesian analysis, we start by explicitly stating our expectation about the effect of the experiment. This initial belief is also known as a “prior.” Although we theoretically expect the number of referrals to decrease at the intervention practices, we have not yet seen evidence of this. Therefore, we formulate our prior conservatively and assume that the intervention has no effect, with a considerable degree of uncertainty. This means we initially assume that the chance of a positive effect (fewer referrals) is as great as a negative effect (more referrals).</p>
+<p>Next, we collect data. Based on this data, we adjust our prior beliefs. The adjusted belief is expressed in the so-called ‘posterior’. The posterior represents the probability that the intervention has an effect, taking into account both our initial belief (the prior) and the data. In other words: the posterior is a mix of the prior and the data. As we collect more data, the influence of the prior on the value of the posterior decreases (for example, we can get more data by adding intervention and control practices, or when we switch to an analysis at the patient level).</p>
+<p>In the first part of this simulation, you will see that our conservatively set prior (expecting no effect) results in a posterior that is slightly lower than the actual effect. We also show that with an overly optimistic prior (expecting a larger effect than there actually is), the posterior is slightly higher than the actual effect. However, these differences are minor when we include sufficient uncertainty in our priors. This is evident in the second part of the simulation.</p>
+<p>In summary, the use of Bayesian analysis allows us to work with limited data and still obtain useful insights about the likelihood of an intervention effect. This is particularly relevant in situations where it is difficult to collect enough data points to perform traditional significance tests. By shifting the focus from mere significance to probability, we can better deal with uncertainty and variability in our results.</p>
+</section><section id="how-does-the-simulation-work" class="level1"><h1>How does the simulation work?</h1>
+<section id="generating-base-data-based-on-parameters" class="level2"><h2 class="anchored" data-anchor-id="generating-base-data-based-on-parameters">Generating base data based on parameters</h2>
+<p>We use the control practices from <a href="https://research.tilburguniversity.edu/en/publications/beyond-the-clock-exploring-the-causal-relationship-between-genera">the previous study</a> to generate the data for this simulation. These practices had about 0.35 to 0.45 referrals per enrolled patient, with a standard deviation of 0.02. Based on these parameters, we generate a dataset that serves as our “base data.” The control practices receive a random number of referrals between 0.37 and 0.43. The intervention practices receive a fixed number of 0.40 referrals. By maintaining a fixed value for the intervention practices, we can easily relate the effect to the starting value later on.</p>
+</section><section id="adding-an-effect" class="level2"><h2 class="anchored" data-anchor-id="adding-an-effect">Adding an effect</h2>
+<p>To this base data, we manually add an effect to simulate the intervention. For example, we add an effect of -0.04 (the number of referrals per patient decreases by 0.04). Relating this to the starting value of the intervention practices (0.4), you see a decrease of 10% (0.04/0.4).</p>
+</section><section id="bayesian-regression" class="level2"><h2 class="anchored" data-anchor-id="bayesian-regression">Bayesian regression</h2>
+<p>After introducing the effect, we perform a Bayesian regression on the dataset. Based on the results of the regression, we can assess how accurately and precisely we have estimated the effect, given the inherent noise and variability in the data.</p>
+<p>The participating parties in the study can choose to achieve a certain minimum effect (and decide, for example, to stop the experiment if this is not achieved). Therefore, we also show how the results can be used to determine the certainty around achieving this minimum effect. The likelihood of achieving the minimum effect (given the inherent noise and variability in the data) is represented in a probability distribution.</p>
+</section><section id="repeated-analysis" class="level2"><h2 class="anchored" data-anchor-id="repeated-analysis">Repeated Analysis</h2>
+<p>We do not perform the regression just once, but repeat it several times. With each repetition (iteration), we generate a new dataset, while continuing to work with the same parameters. This gives us a series of results that illustrate the stability and reproducibility of our analysis. The repetitions help us understand how effective and reliable our analysis is at estimating effects and assessing probabilities, even in situations where limited data points are available.</p>
+</section><section id="final-note" class="level2"><h2 class="anchored" data-anchor-id="final-note">Final Note</h2>
+<p>Finally, we want to note that we have written this simulation for the total number of referrals because we had information on this from previous research. We expect that other interesting outcomes (for example, subcategories of referrals) will contain much more noise than the total number of referrals. However, we can only conduct a proper simulation when we have the referrals from the relevant practices.</p>
+</section></section><section id="what-we-can-modify-in-this-simulation" class="level1"><h1>What we can modify in this simulation</h1>
+<p>It’s possible to run and modify this simulation yourself. This section briefly outlines what’s needed to run this simulation on your own. You can adjust all values in the code blocks of this chapter and observe the effects on the outcomes.</p>
+<p>Free software is required. Installation instructions can be found at the bottom of this notebook.</p>
+<div class="cell">
+<details><summary>Code</summary><div class="sourceCode" id="cb1"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co"># packages and settings</span></span>
+<span></span>
+<span><span class="fu">knitr</span><span class="fu">::</span><span class="va"><a href="https://rdrr.io/pkg/knitr/man/opts_chunk.html">opts_chunk</a></span><span class="op">$</span><span class="fu">set</span><span class="op">(</span>eval <span class="op">=</span> <span class="cn">TRUE</span>, warning <span class="op">=</span> <span class="cn">FALSE</span>, message <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">scipen</span> <span class="op">=</span> <span class="fl">999</span></span>
+<span></span>
+<span><span class="co"># Installing packages -&gt; only needs to be done once, then they can be loaded</span></span>
+<span></span>
+<span><span class="co"># install.packages(c("tidyverse", "ggridges", "brms"))</span></span>
+<span></span>
+<span><span class="co"># Loading packages</span></span>
+<span></span>
+<span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://tidyverse.tidyverse.org">tidyverse</a></span><span class="op">)</span> <span class="co"># for data wrangling and plots</span></span>
+<span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://wilkelab.org/ggridges/">ggridges</a></span><span class="op">)</span> <span class="co"># for posterior plots</span></span>
+<span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/paul-buerkner/brms">brms</a></span><span class="op">)</span> <span class="co"># for Bayesian analysis (interface to Stan)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+<section id="number-of-practices" class="level2"><h2 class="anchored" data-anchor-id="number-of-practices">number of practices</h2>
+<div class="cell">
+<details><summary>Code</summary><div class="sourceCode" id="cb2"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co"># Choose number of intervention practices</span></span>
+<span></span>
+<span><span class="va">IP</span> <span class="op">&lt;-</span> <span class="fl">2</span></span>
+<span></span>
+<span><span class="co"># Choose number of control practices</span></span>
+<span></span>
+<span><span class="va">CP</span> <span class="op">&lt;-</span> <span class="fl">3</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+<p>We have 2 intervention and 3 control practices. This number can be adjusted in the “number of practices” code block above. For the base data generated below, we opt for an average number of referrals per patient of about 0.4 with a standard deviation of 0.02. These parameters are based on the control practices from the previous study in Afferden. Note, however, that, in the previous study, we only had annual data; these data are generated per quarter. It is not entirely clear whether the variation on a quarterly basis is larger.</p>
+<p>Note: To conduct the analysis, we need:</p>
+<ul>
+<li>Number of referrals per practice (from the healthcare domain)</li>
+<li>Number of registered patients per quarter</li>
+</ul></section><section id="trend-over-time" class="level2"><h2 class="anchored" data-anchor-id="trend-over-time">Trend Over Time</h2>
+<div class="cell">
+<details><summary>Code</summary><div class="sourceCode" id="cb3"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co"># Choose a time trend (structural increase/decrease per quarter) that applies to all practices.</span></span>
+<span></span>
+<span><span class="va">TimeTrend</span> <span class="op">&lt;-</span> <span class="op">-</span><span class="fl">0.01</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+<p>It’s entirely possible that there’s a natural trend (independent of the intervention) in the number of referrals. In the data from the control practices in the Afferden study, it seems that referrals across all practices slightly decrease over time. A time trend might complicate estimating the effect, which is why we’ve also introduced a time trend. This time trend can be adjusted in the code block above.</p>
+</section><section id="effect-size-and-minimum-effect" class="level2"><h2 class="anchored" data-anchor-id="effect-size-and-minimum-effect">Effect size and minimum Effect</h2>
+<div class="cell">
+<details><summary>Code</summary><div class="sourceCode" id="cb4"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co"># Choose effect size</span></span>
+<span></span>
+<span><span class="va">Effect</span> <span class="op">&lt;-</span> <span class="op">-</span><span class="fl">0.04</span>   <span class="co"># 0.04 represents approximately a 10% decrease in referrals</span></span>
+<span></span>
+<span><span class="co"># Choose minimum effect</span></span>
+<span></span>
+<span><span class="va">MinimumEffect</span> <span class="op">&lt;-</span> <span class="fl">0</span></span>
+<span></span>
+<span><span class="co"># Calculate the percentage reduction in referrals for the text</span></span>
+<span></span>
+<span><span class="va">RE</span> <span class="op">&lt;-</span> <span class="op">(</span><span class="va">Effect</span> <span class="op">/</span> <span class="fl">0.4</span><span class="op">)</span> <span class="op">*</span> <span class="fl">100</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+<p>We manually add an effect to our data. In this analysis, we have added an effect of approximately -10 in referrals. The figure we should obtain from our analysis is -0.04. This effect can be adjusted larger or smaller in the code block above.</p>
+<p>Additionally, we can determine a minimum effect. In this analysis, the minimum effect we wish to observe is set at 0.</p>
+<p>In our simulation, we obtain the full probability distribution of effect sizes. Generally (but not necessarily), these probability distributions are reasonably normally distributed. We can then estimate the average effect. This estimate should approximately match the effect we have introduced in our simulation. In this case, the average should be close to -0.04. Since we have a full probability distribution, we can also say something about the likelihood of achieving a certain minimum effect.</p>
+<p>If we set the minimum effect at 0, we can say based on the probability distribution: There is an x% chance that the number of referrals has decreased.</p>
+</section><section id="aantal-simulaties" class="level2"><h2 class="anchored" data-anchor-id="aantal-simulaties">Aantal simulaties</h2>
+<div class="cell">
+<details><summary>Code</summary><div class="sourceCode" id="cb5"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co"># Choose the number of regressions to be run</span></span>
+<span></span>
+<span></span>
+<span><span class="va">Iterations</span> <span class="op">&lt;-</span> <span class="fl">20</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+<p>Finally, we can determine the number of regressions by adjusting the number of Iterations in the code block above. Running regressions is time-consuming and memory-intensive, and the plots of the outcomes take up a lot of space. Therefore, it is advised not to set the number of iterations too high. In this analysis, the number of regressions has been set to 20.</p>
+</section></section><section id="generating-base-data-and-performing-regressions" class="level1"><h1>Generating Base Data and Performing Regressions</h1>
+<section id="base-data" class="level2"><h2 class="anchored" data-anchor-id="base-data">Base data</h2>
+<div class="cell">
+<details><summary>Code</summary><div class="sourceCode" id="cb6"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/Random.html">set.seed</a></span><span class="op">(</span><span class="fl">123</span><span class="op">)</span> <span class="co"># For reproducibility</span></span>
+<span></span>
+<span><span class="co"># Create a tibble with practice identifiers and initial referral rates</span></span>
+<span><span class="va">df1</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://tibble.tidyverse.org/reference/tibble.html">tibble</a></span><span class="op">(</span>id <span class="op">=</span> <span class="fl">1</span><span class="op">:</span><span class="op">(</span><span class="va">IP</span> <span class="op">+</span> <span class="va">CP</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> </span>
+<span>  <span class="co"># Assign intervention or control status to practices</span></span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html">mutate</a></span><span class="op">(</span>Intervention <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/ifelse.html">ifelse</a></span><span class="op">(</span>test <span class="op">=</span> <span class="va">id</span> <span class="op">&lt;=</span> <span class="fl">2</span>, yes <span class="op">=</span> <span class="fl">1</span>, no <span class="op">=</span> <span class="fl">0</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
+<span>  <span class="co"># Set up average referrals per enrolled patient for the first quarter (the base)</span></span>
+<span>  <span class="co"># To keep the evaluation straightforward, intervention practices receive the same base percentage</span></span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html">mutate</a></span><span class="op">(</span>Q1 <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/rep.html">rep</a></span><span class="op">(</span><span class="fl">40</span>, each <span class="op">=</span> <span class="va">IP</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/sample.html">sample</a></span><span class="op">(</span>x <span class="op">=</span> <span class="fl">37</span><span class="op">:</span><span class="fl">43</span>, size <span class="op">=</span> <span class="fl">3</span><span class="op">)</span><span class="op">)</span> <span class="op">/</span> <span class="fl">100</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+<p>In the code snippet above, the base data are generated. Practices are categorized as either intervention or control practices, and for each practice, the average number of referrals for the first quarter is set. We will later simulate 11 additional quarters, with the intervention starting in quarter 9.</p>
+</section><section id="simulation" class="level2"><h2 class="anchored" data-anchor-id="simulation">Simulation</h2>
+<div class="cell">
+<details><summary>Code</summary><div class="sourceCode" id="cb7"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co"># Here we simulate (based on the chosen number of regressions) data repeatedly and then run regressions.</span></span>
+<span></span>
+<span></span>
+<span></span>
+<span><span class="va">fullrun</span> <span class="op">&lt;-</span> <span class="fl">0</span></span>
+<span></span>
+<span><span class="kw">if</span><span class="op">(</span><span class="va">fullrun</span><span class="op">)</span><span class="op">{</span></span>
+<span>  </span>
+<span><span class="co"># create empty vectors for estimates and CIs</span></span>
+<span>  </span>
+<span><span class="va">names</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"9"</span>, <span class="st">"10"</span>, <span class="st">"11"</span>, <span class="st">"12"</span><span class="op">)</span></span>
+<span><span class="va">var_lst</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/lapply.html">sapply</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/paste.html">paste0</a></span><span class="op">(</span><span class="st">"Estimate_"</span>, <span class="va">names</span><span class="op">)</span>, <span class="kw">function</span><span class="op">(</span><span class="va">x</span><span class="op">)</span> <span class="fu"><a href="https://rdrr.io/r/base/assign.html">assign</a></span><span class="op">(</span><span class="va">x</span>, <span class="cn">NULL</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="va">var_lst2</span> <span class="op">&lt;-</span><span class="fu"><a href="https://rdrr.io/r/base/lapply.html">sapply</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/paste.html">paste0</a></span><span class="op">(</span><span class="st">"upper_"</span>, <span class="va">names</span><span class="op">)</span>, <span class="kw">function</span><span class="op">(</span><span class="va">x</span><span class="op">)</span> <span class="fu"><a href="https://rdrr.io/r/base/assign.html">assign</a></span><span class="op">(</span><span class="va">x</span>,<span class="cn">NULL</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="va">var_lst3</span> <span class="op">&lt;-</span><span class="fu"><a href="https://rdrr.io/r/base/lapply.html">sapply</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/paste.html">paste0</a></span><span class="op">(</span><span class="st">"lower_"</span>, <span class="va">names</span><span class="op">)</span>, <span class="kw">function</span><span class="op">(</span><span class="va">x</span><span class="op">)</span> <span class="fu"><a href="https://rdrr.io/r/base/assign.html">assign</a></span><span class="op">(</span><span class="va">x</span>,<span class="cn">NULL</span><span class="op">)</span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/list2env.html">list2env</a></span><span class="op">(</span><span class="va">var_lst</span>, <span class="va">.GlobalEnv</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/list2env.html">list2env</a></span><span class="op">(</span><span class="va">var_lst2</span>, <span class="va">.GlobalEnv</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/list2env.html">list2env</a></span><span class="op">(</span><span class="va">var_lst3</span>, <span class="va">.GlobalEnv</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># create an empty tibble for posterior</span></span>
+<span></span>
+<span><span class="va">samples</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://tibble.tidyverse.org/reference/tibble.html">tibble</a></span><span class="op">(</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># starting the for-loop</span></span>
+<span></span>
+<span><span class="kw">for</span><span class="op">(</span><span class="va">i</span> <span class="kw">in</span> <span class="fl">1</span><span class="op">:</span><span class="va">Iterations</span><span class="op">)</span><span class="op">{</span></span>
+<span>  </span>
+<span><span class="co">#  # varying set.seeds for reproducibility</span></span>
+<span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/Random.html">set.seed</a></span><span class="op">(</span><span class="fl">1000</span> <span class="op">+</span> <span class="va">i</span> <span class="op">*</span> <span class="fl">10</span><span class="op">)</span></span>
+<span></span>
+<span> <span class="co"># create a tibble with other quarters</span></span>
+<span>    <span class="va">df</span> <span class="op">&lt;-</span> <span class="va">df1</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
+<span>      <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html">mutate</a></span><span class="op">(</span>Q2 <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/Normal.html">rnorm</a></span><span class="op">(</span>n <span class="op">=</span> <span class="fl">5</span>, mean <span class="op">=</span> <span class="op">(</span><span class="fl">1</span> <span class="op">+</span> <span class="va">TimeTrend</span><span class="op">)</span> <span class="op">*</span> <span class="va">Q1</span>, sd <span class="op">=</span> <span class="fl">0.02</span><span class="op">)</span>,</span>
+<span>             Q3 <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/Normal.html">rnorm</a></span><span class="op">(</span>n <span class="op">=</span> <span class="fl">5</span>, mean <span class="op">=</span> <span class="op">(</span><span class="fl">1</span> <span class="op">+</span> <span class="va">TimeTrend</span><span class="op">)</span><span class="op">^</span><span class="fl">2</span> <span class="op">*</span> <span class="va">Q1</span>, sd <span class="op">=</span> <span class="fl">0.02</span><span class="op">)</span>,</span>
+<span>             Q4 <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/Normal.html">rnorm</a></span><span class="op">(</span>n <span class="op">=</span> <span class="fl">5</span>, mean <span class="op">=</span> <span class="op">(</span><span class="fl">1</span> <span class="op">+</span> <span class="va">TimeTrend</span><span class="op">)</span><span class="op">^</span><span class="fl">3</span> <span class="op">*</span> <span class="va">Q1</span>, sd <span class="op">=</span> <span class="fl">0.02</span><span class="op">)</span>,</span>
+<span>             Q5 <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/Normal.html">rnorm</a></span><span class="op">(</span>n <span class="op">=</span> <span class="fl">5</span>, mean <span class="op">=</span> <span class="op">(</span><span class="fl">1</span> <span class="op">+</span> <span class="va">TimeTrend</span><span class="op">)</span><span class="op">^</span><span class="fl">4</span> <span class="op">*</span> <span class="va">Q1</span>, sd <span class="op">=</span> <span class="fl">0.02</span><span class="op">)</span>,</span>
+<span>             Q6 <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/Normal.html">rnorm</a></span><span class="op">(</span>n <span class="op">=</span> <span class="fl">5</span>, mean <span class="op">=</span> <span class="op">(</span><span class="fl">1</span> <span class="op">+</span> <span class="va">TimeTrend</span><span class="op">)</span><span class="op">^</span><span class="fl">5</span> <span class="op">*</span> <span class="va">Q1</span>, sd <span class="op">=</span> <span class="fl">0.02</span><span class="op">)</span>,</span>
+<span>             Q7 <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/Normal.html">rnorm</a></span><span class="op">(</span>n <span class="op">=</span> <span class="fl">5</span>, mean <span class="op">=</span> <span class="op">(</span><span class="fl">1</span> <span class="op">+</span> <span class="va">TimeTrend</span><span class="op">)</span><span class="op">^</span><span class="fl">6</span> <span class="op">*</span> <span class="va">Q1</span>, sd <span class="op">=</span> <span class="fl">0.02</span><span class="op">)</span>,</span>
+<span>             Q8 <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/Normal.html">rnorm</a></span><span class="op">(</span>n <span class="op">=</span> <span class="fl">5</span>, mean <span class="op">=</span> <span class="op">(</span><span class="fl">1</span> <span class="op">+</span> <span class="va">TimeTrend</span><span class="op">)</span><span class="op">^</span><span class="fl">7</span> <span class="op">*</span> <span class="va">Q1</span>, sd <span class="op">=</span> <span class="fl">0.02</span><span class="op">)</span>,</span>
+<span>             <span class="co"># the intervention begins now</span></span>
+<span>             Q9 <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/Normal.html">rnorm</a></span><span class="op">(</span>n <span class="op">=</span> <span class="fl">5</span>, mean <span class="op">=</span> <span class="op">(</span><span class="fl">1</span> <span class="op">+</span> <span class="va">TimeTrend</span><span class="op">)</span><span class="op">^</span><span class="fl">8</span> <span class="op">*</span> <span class="va">Q1</span>, sd <span class="op">=</span> <span class="fl">0.02</span><span class="op">)</span> <span class="op">+</span> <span class="va">Effect</span> <span class="op">*</span> <span class="va">Intervention</span>,</span>
+<span>             Q10 <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/Normal.html">rnorm</a></span><span class="op">(</span>n <span class="op">=</span> <span class="fl">5</span>, mean <span class="op">=</span> <span class="op">(</span><span class="fl">1</span> <span class="op">+</span> <span class="va">TimeTrend</span><span class="op">)</span><span class="op">^</span><span class="fl">9</span> <span class="op">*</span> <span class="va">Q1</span>, sd <span class="op">=</span> <span class="fl">0.02</span><span class="op">)</span> <span class="op">+</span> <span class="va">Effect</span> <span class="op">*</span> <span class="va">Intervention</span>,</span>
+<span>             Q11 <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/Normal.html">rnorm</a></span><span class="op">(</span>n <span class="op">=</span> <span class="fl">5</span>, mean <span class="op">=</span> <span class="op">(</span><span class="fl">1</span> <span class="op">+</span> <span class="va">TimeTrend</span><span class="op">)</span><span class="op">^</span><span class="fl">10</span> <span class="op">*</span> <span class="va">Q1</span>, sd <span class="op">=</span> <span class="fl">0.02</span><span class="op">)</span> <span class="op">+</span> <span class="va">Effect</span> <span class="op">*</span> <span class="va">Intervention</span>,</span>
+<span>             Q12 <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/Normal.html">rnorm</a></span><span class="op">(</span>n <span class="op">=</span> <span class="fl">5</span>, mean <span class="op">=</span> <span class="op">(</span><span class="fl">1</span> <span class="op">+</span> <span class="va">TimeTrend</span><span class="op">)</span><span class="op">^</span><span class="fl">11</span> <span class="op">*</span> <span class="va">Q1</span>, sd <span class="op">=</span> <span class="fl">0.02</span><span class="op">)</span> <span class="op">+</span> <span class="va">Effect</span> <span class="op">*</span> <span class="va">Intervention</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
+<span>      <span class="co"># make data long</span></span>
+<span>      <span class="fu"><a href="https://tidyr.tidyverse.org/reference/pivot_longer.html">pivot_longer</a></span><span class="op">(</span>cols <span class="op">=</span> <span class="va">Q1</span><span class="op">:</span><span class="va">Q12</span>, names_to <span class="op">=</span> <span class="st">"Quarter"</span>, </span>
+<span>                      values_to <span class="op">=</span> <span class="st">"Referrals"</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
+<span>      <span class="co"># make quarter numeric to create the intervention variable</span></span>
+<span>      <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html">mutate</a></span><span class="op">(</span>Quarter <span class="op">=</span> <span class="fu"><a href="https://stringr.tidyverse.org/reference/str_sub.html">str_sub</a></span><span class="op">(</span><span class="va">Quarter</span>, start <span class="op">=</span> <span class="fl">2</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
+<span>      <span class="co"># create our effect variables</span></span>
+<span>      <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html">mutate</a></span><span class="op">(</span>DiD_9 <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/ifelse.html">ifelse</a></span><span class="op">(</span>test <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/numeric.html">as.numeric</a></span><span class="op">(</span><span class="va">Quarter</span><span class="op">)</span> <span class="op">==</span> <span class="fl">9</span> <span class="op">&amp;</span> <span class="va">Intervention</span> <span class="op">==</span> <span class="fl">1</span>, </span>
+<span>                             yes <span class="op">=</span> <span class="fl">1</span>,</span>
+<span>                             no <span class="op">=</span> <span class="fl">0</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
+<span>      <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html">mutate</a></span><span class="op">(</span>DiD_10 <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/ifelse.html">ifelse</a></span><span class="op">(</span>test <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/numeric.html">as.numeric</a></span><span class="op">(</span><span class="va">Quarter</span><span class="op">)</span> <span class="op">==</span> <span class="fl">10</span> <span class="op">&amp;</span> <span class="va">Intervention</span> <span class="op">==</span> <span class="fl">1</span>, </span>
+<span>                             yes <span class="op">=</span> <span class="fl">1</span>,</span>
+<span>                             no <span class="op">=</span> <span class="fl">0</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
+<span>      <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html">mutate</a></span><span class="op">(</span>DiD_11 <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/ifelse.html">ifelse</a></span><span class="op">(</span>test <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/numeric.html">as.numeric</a></span><span class="op">(</span><span class="va">Quarter</span><span class="op">)</span> <span class="op">==</span> <span class="fl">11</span> <span class="op">&amp;</span> <span class="va">Intervention</span> <span class="op">==</span> <span class="fl">1</span>, </span>
+<span>                             yes <span class="op">=</span> <span class="fl">1</span>,</span>
+<span>                             no <span class="op">=</span> <span class="fl">0</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
+<span>      <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html">mutate</a></span><span class="op">(</span>DiD_12 <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/ifelse.html">ifelse</a></span><span class="op">(</span>test <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/numeric.html">as.numeric</a></span><span class="op">(</span><span class="va">Quarter</span><span class="op">)</span> <span class="op">==</span> <span class="fl">12</span> <span class="op">&amp;</span> <span class="va">Intervention</span> <span class="op">==</span> <span class="fl">1</span>, </span>
+<span>                             yes <span class="op">=</span> <span class="fl">1</span>,</span>
+<span>                             no <span class="op">=</span> <span class="fl">0</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
+<span>      <span class="co"># turn quarter into a factor</span></span>
+<span>      <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html">mutate</a></span><span class="op">(</span>Quarter <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/factor.html">as.factor</a></span><span class="op">(</span><span class="va">Quarter</span><span class="op">)</span><span class="op">)</span></span>
+<span>    </span>
+<span><span class="co"># Formula</span></span>
+<span></span>
+<span><span class="va">Formula</span> <span class="op">&lt;-</span> <span class="st">"Referrals ~ 0 + Intercept + id + Quarter + DiD_9 + DiD_10 + DiD_11 + DiD_12"</span></span>
+<span></span>
+<span><span class="co"># Priors</span></span>
+<span></span>
+<span><span class="co">## non informativce priors</span></span>
+<span></span>
+<span><span class="va">prior1</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fu"><a href="https://paul-buerkner.github.io/brms/reference/set_prior.html">set_prior</a></span><span class="op">(</span><span class="st">"normal(0.4, 0.04)"</span>, class <span class="op">=</span> <span class="st">"b"</span>, coef <span class="op">=</span> <span class="st">"Intercept"</span><span class="op">)</span>,</span>
+<span>            <span class="fu"><a href="https://paul-buerkner.github.io/brms/reference/set_prior.html">set_prior</a></span><span class="op">(</span><span class="st">"normal(0, 0.05)"</span>, class <span class="op">=</span> <span class="st">"b"</span>, coef <span class="op">=</span> <span class="st">"DiD_9"</span><span class="op">)</span>,</span>
+<span>            <span class="fu"><a href="https://paul-buerkner.github.io/brms/reference/set_prior.html">set_prior</a></span><span class="op">(</span><span class="st">"normal(0, 0.05)"</span>, class <span class="op">=</span> <span class="st">"b"</span>, coef <span class="op">=</span> <span class="st">"DiD_10"</span><span class="op">)</span>,</span>
+<span>            <span class="fu"><a href="https://paul-buerkner.github.io/brms/reference/set_prior.html">set_prior</a></span><span class="op">(</span><span class="st">"normal(0, 0.05)"</span>, class <span class="op">=</span> <span class="st">"b"</span>, coef <span class="op">=</span> <span class="st">"DiD_11"</span><span class="op">)</span>,</span>
+<span>            <span class="fu"><a href="https://paul-buerkner.github.io/brms/reference/set_prior.html">set_prior</a></span><span class="op">(</span><span class="st">"normal(0, 0.05)"</span>, class <span class="op">=</span> <span class="st">"b"</span>, coef <span class="op">=</span> <span class="st">"DiD_12"</span><span class="op">)</span><span class="op">)</span></span>
+<span></span>
+<span></span>
+<span><span class="va">reg1</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://paul-buerkner.github.io/brms/reference/brm.html">brm</a></span><span class="op">(</span></span>
+<span>  formula <span class="op">=</span> <span class="va">Formula</span>,</span>
+<span>  prior <span class="op">=</span> <span class="va">prior1</span>,</span>
+<span>  warmup <span class="op">=</span> <span class="fl">1000</span>,</span>
+<span>  iter <span class="op">=</span> <span class="fl">2500</span>,</span>
+<span>  data <span class="op">=</span> <span class="va">df</span>,</span>
+<span>  chains <span class="op">=</span> <span class="fl">4</span>, </span>
+<span>  cores <span class="op">=</span> <span class="fl">6</span>,</span>
+<span>  init <span class="op">=</span> <span class="st">"random"</span>,</span>
+<span>  control <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span>adapt_delta <span class="op">=</span> <span class="fl">0.8</span>, max_treedepth <span class="op">=</span> <span class="fl">12</span><span class="op">)</span>,</span>
+<span>  seed <span class="op">=</span> <span class="fl">123</span>,</span>
+<span>  backend <span class="op">=</span> <span class="st">"cmdstanr"</span>,</span>
+<span>  <span class="op">)</span></span>
+<span></span>
+<span></span>
+<span></span>
+<span><span class="co"># Fill Empty Vectors with Summary Numbers (Estimate and CI)</span></span>
+<span></span>
+<span></span>
+<span><span class="va">Estimate_9</span><span class="op">[</span><span class="va">i</span><span class="op">]</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/pkg/nlme/man/fixed.effects.html">fixef</a></span><span class="op">(</span><span class="va">reg1</span><span class="op">)</span><span class="op">[</span><span class="fl">14</span>,<span class="fl">1</span><span class="op">]</span></span>
+<span><span class="va">lower_9</span><span class="op">[</span><span class="va">i</span><span class="op">]</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/pkg/nlme/man/fixed.effects.html">fixef</a></span><span class="op">(</span><span class="va">reg1</span><span class="op">)</span><span class="op">[</span><span class="fl">14</span>,<span class="fl">3</span><span class="op">]</span></span>
+<span><span class="va">upper_9</span><span class="op">[</span><span class="va">i</span><span class="op">]</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/pkg/nlme/man/fixed.effects.html">fixef</a></span><span class="op">(</span><span class="va">reg1</span><span class="op">)</span><span class="op">[</span><span class="fl">14</span>,<span class="fl">4</span><span class="op">]</span></span>
+<span></span>
+<span><span class="va">Estimate_10</span><span class="op">[</span><span class="va">i</span><span class="op">]</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/pkg/nlme/man/fixed.effects.html">fixef</a></span><span class="op">(</span><span class="va">reg1</span><span class="op">)</span><span class="op">[</span><span class="fl">15</span>,<span class="fl">1</span><span class="op">]</span></span>
+<span><span class="va">lower_10</span><span class="op">[</span><span class="va">i</span><span class="op">]</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/pkg/nlme/man/fixed.effects.html">fixef</a></span><span class="op">(</span><span class="va">reg1</span><span class="op">)</span><span class="op">[</span><span class="fl">15</span>,<span class="fl">3</span><span class="op">]</span></span>
+<span><span class="va">upper_10</span><span class="op">[</span><span class="va">i</span><span class="op">]</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/pkg/nlme/man/fixed.effects.html">fixef</a></span><span class="op">(</span><span class="va">reg1</span><span class="op">)</span><span class="op">[</span><span class="fl">15</span>,<span class="fl">4</span><span class="op">]</span></span>
+<span></span>
+<span><span class="va">Estimate_11</span><span class="op">[</span><span class="va">i</span><span class="op">]</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/pkg/nlme/man/fixed.effects.html">fixef</a></span><span class="op">(</span><span class="va">reg1</span><span class="op">)</span><span class="op">[</span><span class="fl">16</span>,<span class="fl">1</span><span class="op">]</span></span>
+<span><span class="va">lower_11</span><span class="op">[</span><span class="va">i</span><span class="op">]</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/pkg/nlme/man/fixed.effects.html">fixef</a></span><span class="op">(</span><span class="va">reg1</span><span class="op">)</span><span class="op">[</span><span class="fl">16</span>,<span class="fl">3</span><span class="op">]</span></span>
+<span><span class="va">upper_11</span><span class="op">[</span><span class="va">i</span><span class="op">]</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/pkg/nlme/man/fixed.effects.html">fixef</a></span><span class="op">(</span><span class="va">reg1</span><span class="op">)</span><span class="op">[</span><span class="fl">16</span>,<span class="fl">4</span><span class="op">]</span></span>
+<span></span>
+<span><span class="va">Estimate_12</span><span class="op">[</span><span class="va">i</span><span class="op">]</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/pkg/nlme/man/fixed.effects.html">fixef</a></span><span class="op">(</span><span class="va">reg1</span><span class="op">)</span><span class="op">[</span><span class="fl">17</span>,<span class="fl">1</span><span class="op">]</span></span>
+<span><span class="va">lower_12</span><span class="op">[</span><span class="va">i</span><span class="op">]</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/pkg/nlme/man/fixed.effects.html">fixef</a></span><span class="op">(</span><span class="va">reg1</span><span class="op">)</span><span class="op">[</span><span class="fl">17</span>,<span class="fl">3</span><span class="op">]</span></span>
+<span><span class="va">upper_12</span><span class="op">[</span><span class="va">i</span><span class="op">]</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/pkg/nlme/man/fixed.effects.html">fixef</a></span><span class="op">(</span><span class="va">reg1</span><span class="op">)</span><span class="op">[</span><span class="fl">17</span>,<span class="fl">4</span><span class="op">]</span></span>
+<span></span>
+<span><span class="co">## Create a tibble for each quarter</span></span>
+<span></span>
+<span></span>
+<span><span class="va">Results_9</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://tibble.tidyverse.org/reference/tibble.html">tibble</a></span><span class="op">(</span>Estimate <span class="op">=</span> <span class="va">Estimate_9</span>, lower <span class="op">=</span> <span class="va">lower_9</span>, upper <span class="op">=</span> <span class="va">upper_9</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
+<span>            <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html">mutate</a></span><span class="op">(</span>Quarter <span class="op">=</span> <span class="st">"Quarter 9"</span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">Results_10</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://tibble.tidyverse.org/reference/tibble.html">tibble</a></span><span class="op">(</span>Estimate <span class="op">=</span> <span class="va">Estimate_10</span>, lower <span class="op">=</span> <span class="va">lower_10</span>, upper <span class="op">=</span> <span class="va">upper_10</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
+<span>            <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html">mutate</a></span><span class="op">(</span>Quarter <span class="op">=</span> <span class="st">"Quarter 10"</span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">Results_11</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://tibble.tidyverse.org/reference/tibble.html">tibble</a></span><span class="op">(</span>Estimate <span class="op">=</span> <span class="va">Estimate_11</span>, lower <span class="op">=</span> <span class="va">lower_11</span>, upper <span class="op">=</span> <span class="va">upper_11</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
+<span>            <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html">mutate</a></span><span class="op">(</span>Quarter <span class="op">=</span> <span class="st">"Quarter 11"</span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">Results_12</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://tibble.tidyverse.org/reference/tibble.html">tibble</a></span><span class="op">(</span>Estimate <span class="op">=</span> <span class="va">Estimate_12</span>, lower <span class="op">=</span> <span class="va">lower_12</span>, upper <span class="op">=</span> <span class="va">upper_12</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
+<span>            <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html">mutate</a></span><span class="op">(</span>Quarter <span class="op">=</span> <span class="st">"Quarter 12"</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co">## Combine the Tibbles</span></span>
+<span><span class="va">Results</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/cbind.html">rbind</a></span><span class="op">(</span><span class="va">Results_9</span>, <span class="va">Results_10</span>, <span class="va">Results_11</span>, <span class="va">Results_12</span><span class="op">)</span></span>
+<span></span>
+<span></span>
+<span><span class="co"># posterior draws</span></span>
+<span></span>
+<span><span class="va">samples_temp</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://tibble.tidyverse.org/reference/tibble.html">tibble</a></span><span class="op">(</span><span class="fu"><a href="https://mc-stan.org/posterior/reference/draws_df.html">as_draws_df</a></span><span class="op">(</span><span class="va">reg1</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html">mutate</a></span><span class="op">(</span>Run <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/factor.html">as.factor</a></span><span class="op">(</span><span class="va">i</span><span class="op">)</span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">samples</span> <span class="op">&lt;-</span> <span class="va">samples</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="https://rdrr.io/r/base/cbind.html">rbind</a></span><span class="op">(</span><span class="va">samples_temp</span><span class="op">)</span></span>
+<span></span>
+<span><span class="op">}</span></span>
+<span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/readRDS.html">saveRDS</a></span><span class="op">(</span><span class="va">Results</span>, <span class="st">"Results.RDS"</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/readRDS.html">saveRDS</a></span><span class="op">(</span><span class="va">samples</span>, <span class="st">"samples.RDS"</span><span class="op">)</span></span>
+<span></span>
+<span></span>
+<span><span class="op">}</span> <span class="kw">else</span> <span class="op">{</span></span>
+<span></span>
+<span><span class="va">Results</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/readRDS.html">readRDS</a></span><span class="op">(</span><span class="st">"Results.RDS"</span><span class="op">)</span></span>
+<span><span class="va">samples</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/readRDS.html">readRDS</a></span><span class="op">(</span><span class="st">"samples.RDS"</span><span class="op">)</span></span>
+<span></span>
+<span>  </span>
+<span><span class="op">}</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+<p>In the code above, we repeatedly carry out simulations, each time generating slightly different data. We simulate the average referrals per registered patient for quarters 2 through 12, introducing some random variation and a time trend around the number applicable for the first quarter. This added variation (referred to as noise and set at 0.02) amounts to about 5% of the number of referrals and is based on data from control practices in the Afferden study.</p>
+<p>Afterwards, we perform Bayesian regression on each simulated dataset and save the results. In executing these regressions, we start with an initial and somewhat conservative expectation that the intervention has no effect. However, we allow for uncertainty. Therefore, we set an effect whose probability distribution is normally distributed around 0, with a standard deviation of 0.05. This implies we expect about a 95% chance that the effect falls between -0.1 and 0.1. This translates into an effect of approximately plus or minus 25% on the number of referrals. Very large effects (such as those observed in previous research in Afferden) are considered very unlikely with this initial expectation. For completeness, we have also tested an alternative initial expectation, where we expect a large effect. This has only a limited impact on the results. See the following section on the influence of a different prior.</p>
+</section></section><section id="visualizations-of-the-estimates" class="level1"><h1>Visualizations of the Estimates</h1>
+<p>We graphically display the results of the regressions by quarter. Each graph shows the estimated effect per iteration, represented as a probability distribution. The black vertical line within the distribution represents the estimated mean effect. The green vertical line marks the established effect as we previously manually inputted. We expect the effect estimates to be close to the established effect. Previously, we set whether the effect is positive (fewer referrals) or negative (more referrals). The following interpretation applies when the effect is set to be positive: A black line to the left of the green line indicates that the actual effect is overestimated. When the black line is to the right of the green line, the actual effect is underestimated.</p>
+<p>The vertical red dotted line indicates a zero effect. On the right side of the probability distributions, the chance that the effect is at least equal to, or less than, the desired minimum effect in which we are interested is displayed in blue text. In this case, the minimum effect is set at 0.</p>
+<div class="cell">
+<details><summary>Code</summary><div class="sourceCode" id="cb8"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">Subplottitle</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html">paste0</a></span><span class="op">(</span><span class="st">"The probability distribution of the estimated effect per simulation\nand in blue the chance that the effect is smaller than "</span>, <span class="va">MinimumEffect</span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">samples_MinimumEffect9</span> <span class="op">&lt;-</span> <span class="va">samples</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html">mutate</a></span><span class="op">(</span>EffectBelowMinimum <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/ifelse.html">ifelse</a></span><span class="op">(</span>test <span class="op">=</span> <span class="va">b_DiD_9</span> <span class="op">&lt;</span> <span class="va">MinimumEffect</span>,</span>
+<span>                                     yes <span class="op">=</span> <span class="fl">1</span>,</span>
+<span>                                     no <span class="op">=</span> <span class="fl">0</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/group_by.html">group_by</a></span><span class="op">(</span><span class="va">Run</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/summarise.html">summarise</a></span><span class="op">(</span>Percentage1 <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/mean.html">mean</a></span><span class="op">(</span><span class="va">EffectBelowMinimum</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/group_by.html">ungroup</a></span><span class="op">(</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html">mutate</a></span><span class="op">(</span>Percentage <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html">paste0</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/Round.html">round</a></span><span class="op">(</span><span class="va">Percentage1</span> <span class="op">*</span> <span class="fl">100</span>, <span class="fl">0</span><span class="op">)</span>, <span class="st">" %"</span><span class="op">)</span><span class="op">)</span><span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html">mutate</a></span><span class="op">(</span>Run_extra <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/numeric.html">as.numeric</a></span><span class="op">(</span><span class="va">Run</span><span class="op">)</span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html">ggplot</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">samples</span>, <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html">aes</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">b_DiD_9</span>, </span>
+<span>                            y <span class="op">=</span> <span class="va">Run</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://wilkelab.org/ggridges/reference/geom_density_ridges.html">geom_density_ridges2</a></span><span class="op">(</span>scale <span class="op">=</span> <span class="fl">0.85</span>, quantile_lines<span class="op">=</span><span class="cn">TRUE</span>,</span>
+<span>                       quantile_fun<span class="op">=</span><span class="kw">function</span><span class="op">(</span><span class="va">x</span>,<span class="va">...</span><span class="op">)</span><span class="fu"><a href="https://rdrr.io/r/base/mean.html">mean</a></span><span class="op">(</span><span class="va">x</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_abline.html">geom_vline</a></span><span class="op">(</span>xintercept <span class="op">=</span> <span class="fl">0</span>, color <span class="op">=</span> <span class="st">"firebrick"</span>, linetype <span class="op">=</span> <span class="st">"dashed"</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_abline.html">geom_vline</a></span><span class="op">(</span>xintercept <span class="op">=</span> <span class="va">Effect</span>, color <span class="op">=</span> <span class="st">"darkgreen"</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggtheme.html">theme_bw</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/theme.html">theme</a></span><span class="op">(</span>legend.position <span class="op">=</span> <span class="st">"none"</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html">labs</a></span><span class="op">(</span>y <span class="op">=</span> <span class="st">" "</span>, x <span class="op">=</span> <span class="st">"Estimated effect"</span>,</span>
+<span>       title <span class="op">=</span> <span class="st">"Quarter 9"</span>,</span>
+<span>       subtitle <span class="op">=</span> <span class="va">Subplottitle</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_text.html">geom_text</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">samples_MinimumEffect9</span>, <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html">aes</a></span><span class="op">(</span>x <span class="op">=</span> <span class="fl">0.05</span>, y <span class="op">=</span> <span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/numeric.html">as.numeric</a></span><span class="op">(</span><span class="va">Run</span><span class="op">)</span> <span class="op">+</span> <span class="fl">0.25</span><span class="op">)</span>, label <span class="op">=</span> <span class="va">Percentage</span><span class="op">)</span>,</span>
+<span>            size <span class="op">=</span> <span class="fl">2.5</span>, color <span class="op">=</span> <span class="st">"steelblue"</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/lims.html">xlim</a></span><span class="op">(</span><span class="op">-</span><span class="fl">0.1</span>, <span class="fl">0.1</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details><div class="cell-output-display">
+<p><img src="index_files/figure-html/plotk9-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+<div class="cell">
+<details><summary>Code</summary><div class="sourceCode" id="cb9"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">samples_MinimumEffect10</span> <span class="op">&lt;-</span> <span class="va">samples</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html">mutate</a></span><span class="op">(</span>EffectBelowMinimum <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/ifelse.html">ifelse</a></span><span class="op">(</span>test <span class="op">=</span> <span class="va">b_DiD_10</span> <span class="op">&lt;</span> <span class="va">MinimumEffect</span>,</span>
+<span>                                     yes <span class="op">=</span> <span class="fl">1</span>,</span>
+<span>                                     no <span class="op">=</span> <span class="fl">0</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/group_by.html">group_by</a></span><span class="op">(</span><span class="va">Run</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/summarise.html">summarise</a></span><span class="op">(</span>Percentage1 <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/mean.html">mean</a></span><span class="op">(</span><span class="va">EffectBelowMinimum</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/group_by.html">ungroup</a></span><span class="op">(</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html">mutate</a></span><span class="op">(</span>Percentage <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html">paste0</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/Round.html">round</a></span><span class="op">(</span><span class="va">Percentage1</span> <span class="op">*</span> <span class="fl">100</span>, <span class="fl">0</span><span class="op">)</span>, <span class="st">" %"</span><span class="op">)</span><span class="op">)</span><span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html">mutate</a></span><span class="op">(</span>Run_extra <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/numeric.html">as.numeric</a></span><span class="op">(</span><span class="va">Run</span><span class="op">)</span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html">ggplot</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">samples</span>, <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html">aes</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">b_DiD_10</span>, </span>
+<span>                            y <span class="op">=</span> <span class="va">Run</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://wilkelab.org/ggridges/reference/geom_density_ridges.html">geom_density_ridges2</a></span><span class="op">(</span>scale <span class="op">=</span> <span class="fl">0.85</span>, quantile_lines<span class="op">=</span><span class="cn">TRUE</span>,</span>
+<span>                       quantile_fun<span class="op">=</span><span class="kw">function</span><span class="op">(</span><span class="va">x</span>,<span class="va">...</span><span class="op">)</span><span class="fu"><a href="https://rdrr.io/r/base/mean.html">mean</a></span><span class="op">(</span><span class="va">x</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_abline.html">geom_vline</a></span><span class="op">(</span>xintercept <span class="op">=</span> <span class="fl">0</span>, color <span class="op">=</span> <span class="st">"firebrick"</span>, linetype <span class="op">=</span> <span class="st">"dashed"</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_abline.html">geom_vline</a></span><span class="op">(</span>xintercept <span class="op">=</span> <span class="va">Effect</span>, color <span class="op">=</span> <span class="st">"darkgreen"</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggtheme.html">theme_bw</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/theme.html">theme</a></span><span class="op">(</span>legend.position <span class="op">=</span> <span class="st">"none"</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html">labs</a></span><span class="op">(</span>y <span class="op">=</span> <span class="st">" "</span>, x <span class="op">=</span> <span class="st">"Estimated effect"</span>,</span>
+<span>       title <span class="op">=</span> <span class="st">"Quarter 10"</span>,</span>
+<span>       subtitle <span class="op">=</span> <span class="va">Subplottitle</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_text.html">geom_text</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">samples_MinimumEffect10</span>, <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html">aes</a></span><span class="op">(</span>x <span class="op">=</span> <span class="fl">0.05</span>, y <span class="op">=</span> <span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/numeric.html">as.numeric</a></span><span class="op">(</span><span class="va">Run</span><span class="op">)</span> <span class="op">+</span> <span class="fl">0.25</span><span class="op">)</span>, label <span class="op">=</span> <span class="va">Percentage</span><span class="op">)</span>,</span>
+<span>            size <span class="op">=</span> <span class="fl">2.5</span>, color <span class="op">=</span> <span class="st">"steelblue"</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/lims.html">xlim</a></span><span class="op">(</span><span class="op">-</span><span class="fl">0.1</span>, <span class="fl">0.1</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details><div class="cell-output-display">
+<p><img src="index_files/figure-html/plotk10-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+<div class="cell">
+<details><summary>Code</summary><div class="sourceCode" id="cb10"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">samples_MinimumEffect11</span> <span class="op">&lt;-</span> <span class="va">samples</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html">mutate</a></span><span class="op">(</span>EffectBelowMinimum <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/ifelse.html">ifelse</a></span><span class="op">(</span>test <span class="op">=</span> <span class="va">b_DiD_11</span> <span class="op">&lt;</span> <span class="va">MinimumEffect</span>,</span>
+<span>                                     yes <span class="op">=</span> <span class="fl">1</span>,</span>
+<span>                                     no <span class="op">=</span> <span class="fl">0</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/group_by.html">group_by</a></span><span class="op">(</span><span class="va">Run</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/summarise.html">summarise</a></span><span class="op">(</span>Percentage1 <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/mean.html">mean</a></span><span class="op">(</span><span class="va">EffectBelowMinimum</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/group_by.html">ungroup</a></span><span class="op">(</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html">mutate</a></span><span class="op">(</span>Percentage <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html">paste0</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/Round.html">round</a></span><span class="op">(</span><span class="va">Percentage1</span> <span class="op">*</span> <span class="fl">100</span>, <span class="fl">0</span><span class="op">)</span>, <span class="st">" %"</span><span class="op">)</span><span class="op">)</span><span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html">mutate</a></span><span class="op">(</span>Run_extra <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/numeric.html">as.numeric</a></span><span class="op">(</span><span class="va">Run</span><span class="op">)</span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html">ggplot</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">samples</span>, <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html">aes</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">b_DiD_11</span>, </span>
+<span>                            y <span class="op">=</span> <span class="va">Run</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://wilkelab.org/ggridges/reference/geom_density_ridges.html">geom_density_ridges2</a></span><span class="op">(</span>scale <span class="op">=</span> <span class="fl">0.85</span>, quantile_lines<span class="op">=</span><span class="cn">TRUE</span>,</span>
+<span>                       quantile_fun<span class="op">=</span><span class="kw">function</span><span class="op">(</span><span class="va">x</span>,<span class="va">...</span><span class="op">)</span><span class="fu"><a href="https://rdrr.io/r/base/mean.html">mean</a></span><span class="op">(</span><span class="va">x</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_abline.html">geom_vline</a></span><span class="op">(</span>xintercept <span class="op">=</span> <span class="fl">0</span>, color <span class="op">=</span> <span class="st">"firebrick"</span>, linetype <span class="op">=</span> <span class="st">"dashed"</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_abline.html">geom_vline</a></span><span class="op">(</span>xintercept <span class="op">=</span> <span class="va">Effect</span>, color <span class="op">=</span> <span class="st">"darkgreen"</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggtheme.html">theme_bw</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/theme.html">theme</a></span><span class="op">(</span>legend.position <span class="op">=</span> <span class="st">"none"</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html">labs</a></span><span class="op">(</span>y <span class="op">=</span> <span class="st">" "</span>, x <span class="op">=</span> <span class="st">"Estimated effect"</span>,</span>
+<span>       title <span class="op">=</span> <span class="st">"Quarter 11"</span>,</span>
+<span>       subtitle <span class="op">=</span> <span class="va">Subplottitle</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_text.html">geom_text</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">samples_MinimumEffect11</span>, <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html">aes</a></span><span class="op">(</span>x <span class="op">=</span> <span class="fl">0.05</span>, y <span class="op">=</span> <span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/numeric.html">as.numeric</a></span><span class="op">(</span><span class="va">Run</span><span class="op">)</span> <span class="op">+</span> <span class="fl">0.25</span><span class="op">)</span>, label <span class="op">=</span> <span class="va">Percentage</span><span class="op">)</span>,</span>
+<span>            size <span class="op">=</span> <span class="fl">2.5</span>, color <span class="op">=</span> <span class="st">"steelblue"</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/lims.html">xlim</a></span><span class="op">(</span><span class="op">-</span><span class="fl">0.1</span>, <span class="fl">0.1</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details><div class="cell-output-display">
+<p><img src="index_files/figure-html/plotk11-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+<div class="cell">
+<details><summary>Code</summary><div class="sourceCode" id="cb11"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">samples_MinimumEffect12</span> <span class="op">&lt;-</span> <span class="va">samples</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html">mutate</a></span><span class="op">(</span>EffectBelowMinimum <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/ifelse.html">ifelse</a></span><span class="op">(</span>test <span class="op">=</span> <span class="va">b_DiD_12</span> <span class="op">&lt;</span> <span class="va">MinimumEffect</span>,</span>
+<span>                                     yes <span class="op">=</span> <span class="fl">1</span>,</span>
+<span>                                     no <span class="op">=</span> <span class="fl">0</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/group_by.html">group_by</a></span><span class="op">(</span><span class="va">Run</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/summarise.html">summarise</a></span><span class="op">(</span>Percentage1 <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/mean.html">mean</a></span><span class="op">(</span><span class="va">EffectBelowMinimum</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/group_by.html">ungroup</a></span><span class="op">(</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html">mutate</a></span><span class="op">(</span>Percentage <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html">paste0</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/Round.html">round</a></span><span class="op">(</span><span class="va">Percentage1</span> <span class="op">*</span> <span class="fl">100</span>, <span class="fl">0</span><span class="op">)</span>, <span class="st">" %"</span><span class="op">)</span><span class="op">)</span><span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html">mutate</a></span><span class="op">(</span>Run_extra <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/numeric.html">as.numeric</a></span><span class="op">(</span><span class="va">Run</span><span class="op">)</span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html">ggplot</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">samples</span>, <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html">aes</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">b_DiD_12</span>, </span>
+<span>                            y <span class="op">=</span> <span class="va">Run</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://wilkelab.org/ggridges/reference/geom_density_ridges.html">geom_density_ridges2</a></span><span class="op">(</span>scale <span class="op">=</span> <span class="fl">0.85</span>, quantile_lines<span class="op">=</span><span class="cn">TRUE</span>,</span>
+<span>                       quantile_fun<span class="op">=</span><span class="kw">function</span><span class="op">(</span><span class="va">x</span>,<span class="va">...</span><span class="op">)</span><span class="fu"><a href="https://rdrr.io/r/base/mean.html">mean</a></span><span class="op">(</span><span class="va">x</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_abline.html">geom_vline</a></span><span class="op">(</span>xintercept <span class="op">=</span> <span class="fl">0</span>, color <span class="op">=</span> <span class="st">"firebrick"</span>, linetype <span class="op">=</span> <span class="st">"dashed"</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_abline.html">geom_vline</a></span><span class="op">(</span>xintercept <span class="op">=</span> <span class="va">Effect</span>, color <span class="op">=</span> <span class="st">"darkgreen"</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggtheme.html">theme_bw</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/theme.html">theme</a></span><span class="op">(</span>legend.position <span class="op">=</span> <span class="st">"none"</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html">labs</a></span><span class="op">(</span>y <span class="op">=</span> <span class="st">" "</span>, x <span class="op">=</span> <span class="st">"Estimated effect"</span>,</span>
+<span>       title <span class="op">=</span> <span class="st">"Quarter 12"</span>,</span>
+<span>       subtitle <span class="op">=</span> <span class="va">Subplottitle</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_text.html">geom_text</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">samples_MinimumEffect12</span>, <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html">aes</a></span><span class="op">(</span>x <span class="op">=</span> <span class="fl">0.05</span>, y <span class="op">=</span> <span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/numeric.html">as.numeric</a></span><span class="op">(</span><span class="va">Run</span><span class="op">)</span> <span class="op">+</span> <span class="fl">0.25</span><span class="op">)</span>, label <span class="op">=</span> <span class="va">Percentage</span><span class="op">)</span>,</span>
+<span>            size <span class="op">=</span> <span class="fl">2.5</span>, color <span class="op">=</span> <span class="st">"steelblue"</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/lims.html">xlim</a></span><span class="op">(</span><span class="op">-</span><span class="fl">0.1</span>, <span class="fl">0.1</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details><div class="cell-output-display">
+<p><img src="index_files/figure-html/plotk12-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+</section><section id="the-influence-of-different-initial-expectations-priors" class="level1"><h1>The Influence of Different Initial Expectations (Priors)</h1>
+<p>We ran the simulation again as described above. The only change we made is that we now use a more optimistic initial expectation (prior). Our initial expectation is now that the intervention has an effect of -0.2, which means the intervention leads to a decrease of about 50% in the average number of referrals per registered patient (with an average number of referrals of 0.4). By assigning a significant degree of uncertainty (indicated by a standard deviation of 0.2), this optimistic expectation remains flexible and subject to adjustment based on the collected data.</p>
+<p>The graph below shows the effect of this optimistic prior compared to the conservative prior. We present the averages and standard deviations for both priors. With an actual effect of -0.04 (a 10% decrease), the optimistic prior slightly overestimates the effect, while the conservative prior slightly underestimates it. Choosing the best prior depends on our research goals. Since it’s particularly important in this research not to overestimate the effect, we will use a conservative prior for our main analysis.</p>
+<div class="cell">
+<details><summary>Code</summary><div class="sourceCode" id="cb12"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co"># Here we simulate (based on the chosen number of regressions) data repeatedly and then run regressions.</span></span>
+<span></span>
+<span><span class="va">fullrun</span> <span class="op">&lt;-</span> <span class="fl">0</span></span>
+<span></span>
+<span><span class="kw">if</span><span class="op">(</span><span class="va">fullrun</span><span class="op">)</span><span class="op">{</span></span>
+<span>  </span>
+<span><span class="co"># create empty vectors for estimates and CIs</span></span>
+<span>  </span>
+<span><span class="va">names</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"9"</span>, <span class="st">"10"</span>, <span class="st">"11"</span>, <span class="st">"12"</span><span class="op">)</span></span>
+<span><span class="va">var_lst</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/lapply.html">sapply</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/paste.html">paste0</a></span><span class="op">(</span><span class="st">"Estimate_"</span>, <span class="va">names</span><span class="op">)</span>, <span class="kw">function</span><span class="op">(</span><span class="va">x</span><span class="op">)</span> <span class="fu"><a href="https://rdrr.io/r/base/assign.html">assign</a></span><span class="op">(</span><span class="va">x</span>, <span class="cn">NULL</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="va">var_lst2</span> <span class="op">&lt;-</span><span class="fu"><a href="https://rdrr.io/r/base/lapply.html">sapply</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/paste.html">paste0</a></span><span class="op">(</span><span class="st">"upper_"</span>, <span class="va">names</span><span class="op">)</span>, <span class="kw">function</span><span class="op">(</span><span class="va">x</span><span class="op">)</span> <span class="fu"><a href="https://rdrr.io/r/base/assign.html">assign</a></span><span class="op">(</span><span class="va">x</span>,<span class="cn">NULL</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="va">var_lst3</span> <span class="op">&lt;-</span><span class="fu"><a href="https://rdrr.io/r/base/lapply.html">sapply</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/paste.html">paste0</a></span><span class="op">(</span><span class="st">"lower_"</span>, <span class="va">names</span><span class="op">)</span>, <span class="kw">function</span><span class="op">(</span><span class="va">x</span><span class="op">)</span> <span class="fu"><a href="https://rdrr.io/r/base/assign.html">assign</a></span><span class="op">(</span><span class="va">x</span>,<span class="cn">NULL</span><span class="op">)</span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/list2env.html">list2env</a></span><span class="op">(</span><span class="va">var_lst</span>, <span class="va">.GlobalEnv</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/list2env.html">list2env</a></span><span class="op">(</span><span class="va">var_lst2</span>, <span class="va">.GlobalEnv</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/list2env.html">list2env</a></span><span class="op">(</span><span class="va">var_lst3</span>, <span class="va">.GlobalEnv</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># create an empty tibble for posterior</span></span>
+<span></span>
+<span><span class="va">samples</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://tibble.tidyverse.org/reference/tibble.html">tibble</a></span><span class="op">(</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># starting the for-loop</span></span>
+<span></span>
+<span><span class="kw">for</span><span class="op">(</span><span class="va">i</span> <span class="kw">in</span> <span class="fl">1</span><span class="op">:</span><span class="va">Iterations</span><span class="op">)</span><span class="op">{</span></span>
+<span>  </span>
+<span><span class="co">#  # varying set.seeds for reproducibility</span></span>
+<span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/Random.html">set.seed</a></span><span class="op">(</span><span class="fl">1000</span> <span class="op">+</span> <span class="va">i</span> <span class="op">*</span> <span class="fl">10</span><span class="op">)</span></span>
+<span></span>
+<span> <span class="co"># create a tibble with other quarters</span></span>
+<span>    <span class="va">df</span> <span class="op">&lt;-</span> <span class="va">df1</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
+<span>      <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html">mutate</a></span><span class="op">(</span>Q2 <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/Normal.html">rnorm</a></span><span class="op">(</span>n <span class="op">=</span> <span class="fl">5</span>, mean <span class="op">=</span> <span class="op">(</span><span class="fl">1</span> <span class="op">+</span> <span class="va">TimeTrend</span><span class="op">)</span> <span class="op">*</span> <span class="va">Q1</span>, sd <span class="op">=</span> <span class="fl">0.02</span><span class="op">)</span>,</span>
+<span>             Q3 <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/Normal.html">rnorm</a></span><span class="op">(</span>n <span class="op">=</span> <span class="fl">5</span>, mean <span class="op">=</span> <span class="op">(</span><span class="fl">1</span> <span class="op">+</span> <span class="va">TimeTrend</span><span class="op">)</span><span class="op">^</span><span class="fl">2</span> <span class="op">*</span> <span class="va">Q1</span>, sd <span class="op">=</span> <span class="fl">0.02</span><span class="op">)</span>,</span>
+<span>             Q4 <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/Normal.html">rnorm</a></span><span class="op">(</span>n <span class="op">=</span> <span class="fl">5</span>, mean <span class="op">=</span> <span class="op">(</span><span class="fl">1</span> <span class="op">+</span> <span class="va">TimeTrend</span><span class="op">)</span><span class="op">^</span><span class="fl">3</span> <span class="op">*</span> <span class="va">Q1</span>, sd <span class="op">=</span> <span class="fl">0.02</span><span class="op">)</span>,</span>
+<span>             Q5 <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/Normal.html">rnorm</a></span><span class="op">(</span>n <span class="op">=</span> <span class="fl">5</span>, mean <span class="op">=</span> <span class="op">(</span><span class="fl">1</span> <span class="op">+</span> <span class="va">TimeTrend</span><span class="op">)</span><span class="op">^</span><span class="fl">4</span> <span class="op">*</span> <span class="va">Q1</span>, sd <span class="op">=</span> <span class="fl">0.02</span><span class="op">)</span>,</span>
+<span>             Q6 <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/Normal.html">rnorm</a></span><span class="op">(</span>n <span class="op">=</span> <span class="fl">5</span>, mean <span class="op">=</span> <span class="op">(</span><span class="fl">1</span> <span class="op">+</span> <span class="va">TimeTrend</span><span class="op">)</span><span class="op">^</span><span class="fl">5</span> <span class="op">*</span> <span class="va">Q1</span>, sd <span class="op">=</span> <span class="fl">0.02</span><span class="op">)</span>,</span>
+<span>             Q7 <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/Normal.html">rnorm</a></span><span class="op">(</span>n <span class="op">=</span> <span class="fl">5</span>, mean <span class="op">=</span> <span class="op">(</span><span class="fl">1</span> <span class="op">+</span> <span class="va">TimeTrend</span><span class="op">)</span><span class="op">^</span><span class="fl">6</span> <span class="op">*</span> <span class="va">Q1</span>, sd <span class="op">=</span> <span class="fl">0.02</span><span class="op">)</span>,</span>
+<span>             Q8 <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/Normal.html">rnorm</a></span><span class="op">(</span>n <span class="op">=</span> <span class="fl">5</span>, mean <span class="op">=</span> <span class="op">(</span><span class="fl">1</span> <span class="op">+</span> <span class="va">TimeTrend</span><span class="op">)</span><span class="op">^</span><span class="fl">7</span> <span class="op">*</span> <span class="va">Q1</span>, sd <span class="op">=</span> <span class="fl">0.02</span><span class="op">)</span>,</span>
+<span>             <span class="co"># the intervention begins now</span></span>
+<span>             Q9 <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/Normal.html">rnorm</a></span><span class="op">(</span>n <span class="op">=</span> <span class="fl">5</span>, mean <span class="op">=</span> <span class="op">(</span><span class="fl">1</span> <span class="op">+</span> <span class="va">TimeTrend</span><span class="op">)</span><span class="op">^</span><span class="fl">8</span> <span class="op">*</span> <span class="va">Q1</span>, sd <span class="op">=</span> <span class="fl">0.02</span><span class="op">)</span> <span class="op">+</span> <span class="va">Effect</span> <span class="op">*</span> <span class="va">Intervention</span>,</span>
+<span>             Q10 <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/Normal.html">rnorm</a></span><span class="op">(</span>n <span class="op">=</span> <span class="fl">5</span>, mean <span class="op">=</span> <span class="op">(</span><span class="fl">1</span> <span class="op">+</span> <span class="va">TimeTrend</span><span class="op">)</span><span class="op">^</span><span class="fl">9</span> <span class="op">*</span> <span class="va">Q1</span>, sd <span class="op">=</span> <span class="fl">0.02</span><span class="op">)</span> <span class="op">+</span> <span class="va">Effect</span> <span class="op">*</span> <span class="va">Intervention</span>,</span>
+<span>             Q11 <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/Normal.html">rnorm</a></span><span class="op">(</span>n <span class="op">=</span> <span class="fl">5</span>, mean <span class="op">=</span> <span class="op">(</span><span class="fl">1</span> <span class="op">+</span> <span class="va">TimeTrend</span><span class="op">)</span><span class="op">^</span><span class="fl">10</span> <span class="op">*</span> <span class="va">Q1</span>, sd <span class="op">=</span> <span class="fl">0.02</span><span class="op">)</span> <span class="op">+</span> <span class="va">Effect</span> <span class="op">*</span> <span class="va">Intervention</span>,</span>
+<span>             Q12 <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/Normal.html">rnorm</a></span><span class="op">(</span>n <span class="op">=</span> <span class="fl">5</span>, mean <span class="op">=</span> <span class="op">(</span><span class="fl">1</span> <span class="op">+</span> <span class="va">TimeTrend</span><span class="op">)</span><span class="op">^</span><span class="fl">11</span> <span class="op">*</span> <span class="va">Q1</span>, sd <span class="op">=</span> <span class="fl">0.02</span><span class="op">)</span> <span class="op">+</span> <span class="va">Effect</span> <span class="op">*</span> <span class="va">Intervention</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
+<span>      <span class="co"># make data long</span></span>
+<span>      <span class="fu"><a href="https://tidyr.tidyverse.org/reference/pivot_longer.html">pivot_longer</a></span><span class="op">(</span>cols <span class="op">=</span> <span class="va">Q1</span><span class="op">:</span><span class="va">Q12</span>, names_to <span class="op">=</span> <span class="st">"Quarter"</span>, </span>
+<span>                      values_to <span class="op">=</span> <span class="st">"Referrals"</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
+<span>      <span class="co"># make quarter numeric to create the intervention variable</span></span>
+<span>      <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html">mutate</a></span><span class="op">(</span>Quarter <span class="op">=</span> <span class="fu"><a href="https://stringr.tidyverse.org/reference/str_sub.html">str_sub</a></span><span class="op">(</span><span class="va">Quarter</span>, start <span class="op">=</span> <span class="fl">2</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
+<span>      <span class="co"># create our effect variables</span></span>
+<span>      <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html">mutate</a></span><span class="op">(</span>DiD_9 <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/ifelse.html">ifelse</a></span><span class="op">(</span>test <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/numeric.html">as.numeric</a></span><span class="op">(</span><span class="va">Quarter</span><span class="op">)</span> <span class="op">==</span> <span class="fl">9</span> <span class="op">&amp;</span> <span class="va">Intervention</span> <span class="op">==</span> <span class="fl">1</span>, </span>
+<span>                             yes <span class="op">=</span> <span class="fl">1</span>,</span>
+<span>                             no <span class="op">=</span> <span class="fl">0</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
+<span>      <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html">mutate</a></span><span class="op">(</span>DiD_10 <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/ifelse.html">ifelse</a></span><span class="op">(</span>test <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/numeric.html">as.numeric</a></span><span class="op">(</span><span class="va">Quarter</span><span class="op">)</span> <span class="op">==</span> <span class="fl">10</span> <span class="op">&amp;</span> <span class="va">Intervention</span> <span class="op">==</span> <span class="fl">1</span>, </span>
+<span>                             yes <span class="op">=</span> <span class="fl">1</span>,</span>
+<span>                             no <span class="op">=</span> <span class="fl">0</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
+<span>      <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html">mutate</a></span><span class="op">(</span>DiD_11 <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/ifelse.html">ifelse</a></span><span class="op">(</span>test <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/numeric.html">as.numeric</a></span><span class="op">(</span><span class="va">Quarter</span><span class="op">)</span> <span class="op">==</span> <span class="fl">11</span> <span class="op">&amp;</span> <span class="va">Intervention</span> <span class="op">==</span> <span class="fl">1</span>, </span>
+<span>                             yes <span class="op">=</span> <span class="fl">1</span>,</span>
+<span>                             no <span class="op">=</span> <span class="fl">0</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
+<span>      <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html">mutate</a></span><span class="op">(</span>DiD_12 <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/ifelse.html">ifelse</a></span><span class="op">(</span>test <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/numeric.html">as.numeric</a></span><span class="op">(</span><span class="va">Quarter</span><span class="op">)</span> <span class="op">==</span> <span class="fl">12</span> <span class="op">&amp;</span> <span class="va">Intervention</span> <span class="op">==</span> <span class="fl">1</span>, </span>
+<span>                             yes <span class="op">=</span> <span class="fl">1</span>,</span>
+<span>                             no <span class="op">=</span> <span class="fl">0</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
+<span>      <span class="co"># turn quarter into a factor</span></span>
+<span>      <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html">mutate</a></span><span class="op">(</span>Quarter <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/factor.html">as.factor</a></span><span class="op">(</span><span class="va">Quarter</span><span class="op">)</span><span class="op">)</span></span>
+<span>    </span>
+<span><span class="co"># Formula</span></span>
+<span></span>
+<span><span class="va">Formula</span> <span class="op">&lt;-</span> <span class="st">"Referrals ~ 0 + Intercept + id + Quarter + DiD_9 + DiD_10 + DiD_11 + DiD_12"</span></span>
+<span></span>
+<span></span>
+<span><span class="co"># Priors</span></span>
+<span></span>
+<span><span class="co">## informative priors</span></span>
+<span></span>
+<span><span class="va">prior2</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fu"><a href="https://paul-buerkner.github.io/brms/reference/set_prior.html">set_prior</a></span><span class="op">(</span><span class="st">"normal(0.4, 0.04)"</span>, class <span class="op">=</span> <span class="st">"b"</span>, coef <span class="op">=</span> <span class="st">"Intercept"</span><span class="op">)</span>,</span>
+<span>            <span class="fu"><a href="https://paul-buerkner.github.io/brms/reference/set_prior.html">set_prior</a></span><span class="op">(</span><span class="st">"normal(-0.2, 0.2)"</span>, class <span class="op">=</span> <span class="st">"b"</span>, coef <span class="op">=</span> <span class="st">"DiD_9"</span><span class="op">)</span>,</span>
+<span>            <span class="fu"><a href="https://paul-buerkner.github.io/brms/reference/set_prior.html">set_prior</a></span><span class="op">(</span><span class="st">"normal(-0.2, 0.2)"</span>, class <span class="op">=</span> <span class="st">"b"</span>, coef <span class="op">=</span> <span class="st">"DiD_10"</span><span class="op">)</span>,</span>
+<span>            <span class="fu"><a href="https://paul-buerkner.github.io/brms/reference/set_prior.html">set_prior</a></span><span class="op">(</span><span class="st">"normal(-0.2, 0.2)"</span>, class <span class="op">=</span> <span class="st">"b"</span>, coef <span class="op">=</span> <span class="st">"DiD_11"</span><span class="op">)</span>,</span>
+<span>            <span class="fu"><a href="https://paul-buerkner.github.io/brms/reference/set_prior.html">set_prior</a></span><span class="op">(</span><span class="st">"normal(-0.2, 0.2)"</span>, class <span class="op">=</span> <span class="st">"b"</span>, coef <span class="op">=</span> <span class="st">"DiD_12"</span><span class="op">)</span><span class="op">)</span></span>
+<span></span>
+<span></span>
+<span><span class="va">reg2</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://paul-buerkner.github.io/brms/reference/brm.html">brm</a></span><span class="op">(</span></span>
+<span>  formula <span class="op">=</span> <span class="va">Formula</span>,</span>
+<span>  prior <span class="op">=</span> <span class="va">prior2</span>,</span>
+<span>  warmup <span class="op">=</span> <span class="fl">1000</span>,</span>
+<span>  iter <span class="op">=</span> <span class="fl">2500</span>,</span>
+<span>  data <span class="op">=</span> <span class="va">df</span>,</span>
+<span>  chains <span class="op">=</span> <span class="fl">4</span>, </span>
+<span>  cores <span class="op">=</span> <span class="fl">6</span>,</span>
+<span>  init <span class="op">=</span> <span class="st">"random"</span>,</span>
+<span>  control <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span>adapt_delta <span class="op">=</span> <span class="fl">0.8</span>, max_treedepth <span class="op">=</span> <span class="fl">12</span><span class="op">)</span>,</span>
+<span>  seed <span class="op">=</span> <span class="fl">123</span>,</span>
+<span>  backend <span class="op">=</span> <span class="st">"cmdstanr"</span>,</span>
+<span>  <span class="op">)</span></span>
+<span></span>
+<span></span>
+<span></span>
+<span></span>
+<span></span>
+<span><span class="va">Estimate_9</span><span class="op">[</span><span class="va">i</span><span class="op">]</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/pkg/nlme/man/fixed.effects.html">fixef</a></span><span class="op">(</span><span class="va">reg2</span><span class="op">)</span><span class="op">[</span><span class="fl">14</span>,<span class="fl">1</span><span class="op">]</span></span>
+<span><span class="va">lower_9</span><span class="op">[</span><span class="va">i</span><span class="op">]</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/pkg/nlme/man/fixed.effects.html">fixef</a></span><span class="op">(</span><span class="va">reg2</span><span class="op">)</span><span class="op">[</span><span class="fl">14</span>,<span class="fl">3</span><span class="op">]</span></span>
+<span><span class="va">upper_9</span><span class="op">[</span><span class="va">i</span><span class="op">]</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/pkg/nlme/man/fixed.effects.html">fixef</a></span><span class="op">(</span><span class="va">reg2</span><span class="op">)</span><span class="op">[</span><span class="fl">14</span>,<span class="fl">4</span><span class="op">]</span></span>
+<span></span>
+<span><span class="va">Estimate_10</span><span class="op">[</span><span class="va">i</span><span class="op">]</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/pkg/nlme/man/fixed.effects.html">fixef</a></span><span class="op">(</span><span class="va">reg2</span><span class="op">)</span><span class="op">[</span><span class="fl">15</span>,<span class="fl">1</span><span class="op">]</span></span>
+<span><span class="va">lower_10</span><span class="op">[</span><span class="va">i</span><span class="op">]</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/pkg/nlme/man/fixed.effects.html">fixef</a></span><span class="op">(</span><span class="va">reg2</span><span class="op">)</span><span class="op">[</span><span class="fl">15</span>,<span class="fl">3</span><span class="op">]</span></span>
+<span><span class="va">upper_10</span><span class="op">[</span><span class="va">i</span><span class="op">]</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/pkg/nlme/man/fixed.effects.html">fixef</a></span><span class="op">(</span><span class="va">reg2</span><span class="op">)</span><span class="op">[</span><span class="fl">15</span>,<span class="fl">4</span><span class="op">]</span></span>
+<span></span>
+<span><span class="va">Estimate_11</span><span class="op">[</span><span class="va">i</span><span class="op">]</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/pkg/nlme/man/fixed.effects.html">fixef</a></span><span class="op">(</span><span class="va">reg2</span><span class="op">)</span><span class="op">[</span><span class="fl">16</span>,<span class="fl">1</span><span class="op">]</span></span>
+<span><span class="va">lower_11</span><span class="op">[</span><span class="va">i</span><span class="op">]</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/pkg/nlme/man/fixed.effects.html">fixef</a></span><span class="op">(</span><span class="va">reg2</span><span class="op">)</span><span class="op">[</span><span class="fl">16</span>,<span class="fl">3</span><span class="op">]</span></span>
+<span><span class="va">upper_11</span><span class="op">[</span><span class="va">i</span><span class="op">]</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/pkg/nlme/man/fixed.effects.html">fixef</a></span><span class="op">(</span><span class="va">reg2</span><span class="op">)</span><span class="op">[</span><span class="fl">16</span>,<span class="fl">4</span><span class="op">]</span></span>
+<span></span>
+<span><span class="va">Estimate_12</span><span class="op">[</span><span class="va">i</span><span class="op">]</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/pkg/nlme/man/fixed.effects.html">fixef</a></span><span class="op">(</span><span class="va">reg2</span><span class="op">)</span><span class="op">[</span><span class="fl">17</span>,<span class="fl">1</span><span class="op">]</span></span>
+<span><span class="va">lower_12</span><span class="op">[</span><span class="va">i</span><span class="op">]</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/pkg/nlme/man/fixed.effects.html">fixef</a></span><span class="op">(</span><span class="va">reg2</span><span class="op">)</span><span class="op">[</span><span class="fl">17</span>,<span class="fl">3</span><span class="op">]</span></span>
+<span><span class="va">upper_12</span><span class="op">[</span><span class="va">i</span><span class="op">]</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/pkg/nlme/man/fixed.effects.html">fixef</a></span><span class="op">(</span><span class="va">reg2</span><span class="op">)</span><span class="op">[</span><span class="fl">17</span>,<span class="fl">4</span><span class="op">]</span></span>
+<span></span>
+<span></span>
+<span></span>
+<span></span>
+<span><span class="va">Results_9</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://tibble.tidyverse.org/reference/tibble.html">tibble</a></span><span class="op">(</span>Estimate <span class="op">=</span> <span class="va">Estimate_9</span>, lower <span class="op">=</span> <span class="va">lower_9</span>, upper <span class="op">=</span> <span class="va">upper_9</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
+<span>            <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html">mutate</a></span><span class="op">(</span>Quarter <span class="op">=</span> <span class="st">"Quarter 9"</span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">Results_10</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://tibble.tidyverse.org/reference/tibble.html">tibble</a></span><span class="op">(</span>Estimate <span class="op">=</span> <span class="va">Estimate_10</span>, lower <span class="op">=</span> <span class="va">lower_10</span>, upper <span class="op">=</span> <span class="va">upper_10</span><span class="op">)</span><span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
+<span>            <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html">mutate</a></span><span class="op">(</span>Quarter <span class="op">=</span> <span class="st">"Quarter 10"</span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">Results_11</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://tibble.tidyverse.org/reference/tibble.html">tibble</a></span><span class="op">(</span>Estimate <span class="op">=</span> <span class="va">Estimate_11</span>, lower <span class="op">=</span> <span class="va">lower_11</span>, upper <span class="op">=</span> <span class="va">upper_11</span><span class="op">)</span><span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
+<span>            <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html">mutate</a></span><span class="op">(</span>Quarter <span class="op">=</span> <span class="st">"Quarter 11"</span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">Results_12</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://tibble.tidyverse.org/reference/tibble.html">tibble</a></span><span class="op">(</span>Estimate <span class="op">=</span> <span class="va">Estimate_12</span>, lower <span class="op">=</span> <span class="va">lower_12</span>, upper <span class="op">=</span> <span class="va">upper_12</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
+<span>            <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html">mutate</a></span><span class="op">(</span>Quarter <span class="op">=</span> <span class="st">"Quarter 12"</span><span class="op">)</span></span>
+<span></span>
+<span></span>
+<span></span>
+<span><span class="va">Results</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/cbind.html">rbind</a></span><span class="op">(</span><span class="va">Results_9</span>, <span class="va">Results_10</span>, <span class="va">Results_11</span>, <span class="va">Results_12</span><span class="op">)</span></span>
+<span></span>
+<span></span>
+<span><span class="co"># posterior draws</span></span>
+<span></span>
+<span><span class="va">samples_temp</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://tibble.tidyverse.org/reference/tibble.html">tibble</a></span><span class="op">(</span><span class="fu"><a href="https://mc-stan.org/posterior/reference/draws_df.html">as_draws_df</a></span><span class="op">(</span><span class="va">reg2</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html">mutate</a></span><span class="op">(</span>Run <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/factor.html">as.factor</a></span><span class="op">(</span><span class="va">i</span><span class="op">)</span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">samples</span> <span class="op">&lt;-</span> <span class="va">samples</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="https://rdrr.io/r/base/cbind.html">rbind</a></span><span class="op">(</span><span class="va">samples_temp</span><span class="op">)</span></span>
+<span></span>
+<span><span class="op">}</span></span>
+<span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/readRDS.html">saveRDS</a></span><span class="op">(</span><span class="va">Results</span>, <span class="st">"Results2.RDS"</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/readRDS.html">saveRDS</a></span><span class="op">(</span><span class="va">samples</span>, <span class="st">"samples2.RDS"</span><span class="op">)</span></span>
+<span></span>
+<span></span>
+<span><span class="op">}</span> <span class="kw">else</span> <span class="op">{</span></span>
+<span></span>
+<span><span class="va">Results2</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/readRDS.html">readRDS</a></span><span class="op">(</span><span class="st">"Results2.RDS"</span><span class="op">)</span></span>
+<span><span class="va">samples2</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/readRDS.html">readRDS</a></span><span class="op">(</span><span class="st">"samples2.RDS"</span><span class="op">)</span></span>
+<span></span>
+<span>  </span>
+<span><span class="op">}</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+<div class="cell">
+<details><summary>Code</summary><div class="sourceCode" id="cb13"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">RR</span> <span class="op">&lt;-</span> <span class="va">Results</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/group_by.html">group_by</a></span><span class="op">(</span><span class="va">Quarter</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/summarise.html">summarise</a></span><span class="op">(</span>ME <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/mean.html">mean</a></span><span class="op">(</span><span class="va">Estimate</span><span class="op">)</span>, ML <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/mean.html">mean</a></span><span class="op">(</span><span class="va">lower</span><span class="op">)</span>, MU <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/mean.html">mean</a></span><span class="op">(</span><span class="va">upper</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/group_by.html">ungroup</a></span><span class="op">(</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html">mutate</a></span><span class="op">(</span>Prior <span class="op">=</span> <span class="st">"conservative"</span><span class="op">)</span></span>
+<span></span>
+<span></span>
+<span><span class="va">RR2</span> <span class="op">&lt;-</span><span class="va">Results2</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> </span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/group_by.html">group_by</a></span><span class="op">(</span><span class="va">Quarter</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/summarise.html">summarise</a></span><span class="op">(</span>ME <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/mean.html">mean</a></span><span class="op">(</span><span class="va">Estimate</span><span class="op">)</span>, ML <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/mean.html">mean</a></span><span class="op">(</span><span class="va">lower</span><span class="op">)</span>, MU <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/mean.html">mean</a></span><span class="op">(</span><span class="va">upper</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/group_by.html">ungroup</a></span><span class="op">(</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html">mutate</a></span><span class="op">(</span>Prior <span class="op">=</span> <span class="st">"excessively\noptimistic"</span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">RR3</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/cbind.html">rbind</a></span><span class="op">(</span><span class="va">RR</span>, <span class="va">RR2</span><span class="op">)</span> </span>
+<span></span>
+<span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html">ggplot</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">RR3</span>, <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html">aes</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">ML</span>, xend <span class="op">=</span> <span class="va">MU</span>, y <span class="op">=</span> <span class="va">Prior</span>, yend <span class="op">=</span> <span class="va">Prior</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_segment.html">geom_segment</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_point.html">geom_point</a></span><span class="op">(</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html">aes</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">ME</span>, y <span class="op">=</span> <span class="va">Prior</span><span class="op">)</span>, size <span class="op">=</span> <span class="fl">2</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/facet_wrap.html">facet_wrap</a></span><span class="op">(</span><span class="op">~</span><span class="fu"><a href="https://rdrr.io/r/base/factor.html">factor</a></span><span class="op">(</span><span class="va">Quarter</span>, levels<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"Quarter 9"</span>,</span>
+<span>                                        <span class="st">"Quarter 10"</span>,</span>
+<span>                                        <span class="st">"Quarter 11"</span>,</span>
+<span>                                        <span class="st">"Quarter 12"</span><span class="op">)</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_abline.html">geom_vline</a></span><span class="op">(</span>xintercept <span class="op">=</span> <span class="fl">0</span>, color <span class="op">=</span> <span class="st">"firebrick"</span>, linetype <span class="op">=</span> <span class="st">"dashed"</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_abline.html">geom_vline</a></span><span class="op">(</span>xintercept <span class="op">=</span> <span class="va">Effect</span>, color <span class="op">=</span> <span class="st">"darkgreen"</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/lims.html">xlim</a></span><span class="op">(</span><span class="op">-</span><span class="fl">0.2</span>, <span class="fl">0.2</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggtheme.html">theme_bw</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/theme.html">theme</a></span><span class="op">(</span>legend.position <span class="op">=</span> <span class="st">"none"</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html">labs</a></span><span class="op">(</span>y <span class="op">=</span> <span class="st">""</span>, x <span class="op">=</span> <span class="st">"Estimated effect"</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details><div class="cell-output-display">
+<p><img src="index_files/figure-html/comparison of priors-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+</section><section id="installation-instructions" class="level1"><h1>Installation Instructions</h1>
+<p>This notebook is required to proceed. Additionally, free software needs to be installed:</p>
+<ul>
+<li>RStudio and R <a href="https://posit.co/download/rstudio-desktop/" title="RStudio and R">https://RStudio.com/download/rstudio-desktop/</a>
+</li>
+<li>Stan <a href="https://learnb4ss.github.io/learnB4SS/articles/install-brms.html">https://learnb4ss.github.io/learnB4SS/articles/install-brms.html</a> (Stan is used for Bayesian estimation)</li>
+</ul>
+<p>You only need to open RStudio. If you are installing RStudio for the first time, it will likely prompt you to install a number of packages (collections of functions). It is necessary to do so. RStudio installs these packages itself.</p>
+<p>In addition, a number of packages (see the <code><a href="https://rdrr.io/r/base/library.html">library()</a></code> code in the settings code block at the top) need to be installed. This only needs to be done once. To do this, you should remove the hash (<code>#</code>) before <code><a href="https://rdrr.io/r/utils/install.packages.html">install.packages()</a></code> and run the code with the play button. Afterward, you can put the hash back (then the code is not run).</p>
+<p>With the “Render” button (next to the blue arrow, about in the middle of the toolbar), you can regenerate this HTML. Note: The estimations take a lot of time. Therefore, a function named <code>fullrun()</code> has been created. The recommendation is to first run the 2 simulation code blocks after a change with <code>fullrun &lt;- 1</code> and then set <code>fullrun</code> back to <code>fullrun &lt;- 0</code> and run each simulation separately. After doing that, you can use the Render button to create a new HTML.</p>
+
+
+</section></main><!-- /main --><script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const isCodeAnnotation = (el) => {
+    for (const clz of el.classList) {
+      if (clz.startsWith('code-annotation-')) {                     
+        return true;
+      }
+    }
+    return false;
+  }
+  const clipboard = new window.ClipboardJS('.code-copy-button', {
+    text: function(trigger) {
+      const codeEl = trigger.previousElementSibling.cloneNode(true);
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+  });
+  clipboard.on('success', function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    let tooltip;
+    if (window.bootstrap) {
+      button.setAttribute("data-bs-toggle", "tooltip");
+      button.setAttribute("data-bs-placement", "left");
+      button.setAttribute("data-bs-title", "Copied!");
+      tooltip = new bootstrap.Tooltip(button, 
+        { trigger: "manual", 
+          customClass: "code-copy-button-tooltip",
+          offset: [0, -8]});
+      tooltip.show();    
+    }
+    setTimeout(function() {
+      if (tooltip) {
+        tooltip.hide();
+        button.removeAttribute("data-bs-title");
+        button.removeAttribute("data-bs-toggle");
+        button.removeAttribute("data-bs-placement");
+      }
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  });
+  function tippyHover(el, contentFn) {
+    const config = {
+      allowHTML: true,
+      content: contentFn,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start'
+    };
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      return note.innerHTML;
+    });
+  }
+      let selectedAnnoteEl;
+      const selectorForAnnotation = ( cell, annotation) => {
+        let cellAttr = 'data-code-cell="' + cell + '"';
+        let lineAttr = 'data-code-annotation="' +  annotation + '"';
+        const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+        return selector;
+      }
+      const selectCodeLines = (annoteEl) => {
+        const doc = window.document;
+        const targetCell = annoteEl.getAttribute("data-target-cell");
+        const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+        const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+        const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+        const lineIds = lines.map((line) => {
+          return targetCell + "-" + line;
+        })
+        let top = null;
+        let height = null;
+        let parent = null;
+        if (lineIds.length > 0) {
+            //compute the position of the single el (top and bottom and make a div)
+            const el = window.document.getElementById(lineIds[0]);
+            top = el.offsetTop;
+            height = el.offsetHeight;
+            parent = el.parentElement.parentElement;
+          if (lineIds.length > 1) {
+            const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+            const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+            height = bottom - top;
+          }
+          if (top !== null && height !== null && parent !== null) {
+            // cook up a div (if necessary) and position it 
+            let div = window.document.getElementById("code-annotation-line-highlight");
+            if (div === null) {
+              div = window.document.createElement("div");
+              div.setAttribute("id", "code-annotation-line-highlight");
+              div.style.position = 'absolute';
+              parent.appendChild(div);
+            }
+            div.style.top = top - 2 + "px";
+            div.style.height = height + 4 + "px";
+            let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+            if (gutterDiv === null) {
+              gutterDiv = window.document.createElement("div");
+              gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+              gutterDiv.style.position = 'absolute';
+              const codeCell = window.document.getElementById(targetCell);
+              const gutter = codeCell.querySelector('.code-annotation-gutter');
+              gutter.appendChild(gutterDiv);
+            }
+            gutterDiv.style.top = top - 2 + "px";
+            gutterDiv.style.height = height + 4 + "px";
+          }
+          selectedAnnoteEl = annoteEl;
+        }
+      };
+      const unselectCodeLines = () => {
+        const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+        elementsIds.forEach((elId) => {
+          const div = window.document.getElementById(elId);
+          if (div) {
+            div.remove();
+          }
+        });
+        selectedAnnoteEl = undefined;
+      };
+      // Attach click handler to the DT
+      const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+      for (const annoteDlNode of annoteDls) {
+        annoteDlNode.addEventListener('click', (event) => {
+          const clickedEl = event.target;
+          if (clickedEl !== selectedAnnoteEl) {
+            unselectCodeLines();
+            const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+            if (activeEl) {
+              activeEl.classList.remove('code-annotation-active');
+            }
+            selectCodeLines(clickedEl);
+            clickedEl.classList.add('code-annotation-active');
+          } else {
+            // Unselect the line
+            unselectCodeLines();
+            clickedEl.classList.remove('code-annotation-active');
+          }
+        });
+      }
+  const findCites = (el) => {
+    const parentEl = el.parentElement;
+    if (parentEl) {
+      const cites = parentEl.dataset.cites;
+      if (cites) {
+        return {
+          el,
+          cites: cites.split(' ')
+        };
+      } else {
+        return findCites(el.parentElement)
+      }
+    } else {
+      return undefined;
+    }
+  };
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const citeInfo = findCites(ref);
+    if (citeInfo) {
+      tippyHover(citeInfo.el, function() {
+        var popup = window.document.createElement('div');
+        citeInfo.cites.forEach(function(cite) {
+          var citeDiv = window.document.createElement('div');
+          citeDiv.classList.add('hanging-indent');
+          citeDiv.classList.add('csl-entry');
+          var biblioDiv = window.document.getElementById('ref-' + cite);
+          if (biblioDiv) {
+            citeDiv.innerHTML = biblioDiv.innerHTML;
+          }
+          popup.appendChild(citeDiv);
+        });
+        return popup.innerHTML;
+      });
+    }
+  }
+});
+</script>
+</div> <!-- /content -->
+
+
+
+</body></html>

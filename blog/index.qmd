@@ -1,6 +1,45 @@
 ---
-title: "Blog"
+title: "Blogs"
+author: ""
+title-block-banner: false
+page-layout: full
+description-meta: "Welcome to my blog."
+
+listing:
+  - id: posts_2024
+    contents: 
+       - "Poweranalysis/index.qmd"
+    sort: "date desc"
+    template: ../html/blog/listing.ejs
+    categories: true
+  - id: posts_old
+    contents: 
+    - "DEA/index.qmd"
+    sort: "date desc"
+    template: ../html/blog/listing.ejs
+    
+toc-title: Year
+toc-location: right
+date-format: "MMMM D, YYYY"
+image: ""
+code-tools: false
+comments: false
 ---
+
+Welcome to my blog. Here you will find a collection of posts on various topics.
+
+## 2024
+
+:::{#posts_2024}
+:::
+
+## Older posts
+
+:::{#posts_old}
+:::
+
+---
+
 
 
 
