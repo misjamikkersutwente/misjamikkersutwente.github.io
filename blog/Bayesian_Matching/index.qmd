@@ -13,7 +13,7 @@ authors:
     location: Enschede, the Netherlands
     email: m.c.mikkers@utwente.nl
 description: "In this post, we demonstrate through data simulation how we will measure the effect of an innovative Transitional Care Unit (TCU) called the Jeroen Pit Huis (JPH). We are using bayesian probability weighting methods."
-date: 03-20-2024 
+date: 04-12-2025 
 categories: 
   - Innovative care model 
   - Bayesian probability weighting methods

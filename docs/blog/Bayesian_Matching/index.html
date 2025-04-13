@@ -5,7 +5,7 @@
 <meta name="generator" content="quarto-1.6.42">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 <meta name="author" content="Misja Mikkers">
-<meta name="dcterms.date" content="2024-03-20">
+<meta name="dcterms.date" content="2025-04-12">
 <meta name="description" content="In this post, we demonstrate through data simulation how we will measure the effect of an innovative Transitional Care Unit (TCU) called the Jeroen Pit Huis (JPH). We are using bayesian probability weighting methods.">
 <title>Evaluation of a pediatric Transitional Care Unit in the Netherlands – Misja Mikkers</title>
 <style>
@@ -5041,7 +5041,7 @@ window.Quarto = {
     <div>
     <div class="quarto-title-meta-heading">Published</div>
     <div class="quarto-title-meta-contents">
-      <p class="date">March 20, 2024</p>
+      <p class="date">April 12, 2025</p>
     </div>
   </div>
   
@@ -5340,15 +5340,18 @@ border-radius: 5px;
 <span>  <span class="va">model_prop_scores</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/readRDS.html">readRDS</a></span><span class="op">(</span><span class="st">&quot;model_prop_scores.RDS&quot;</span><span class="op">)</span></span>
 <span></span>
 <span><span class="op">}</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</details>
+</details><div class="cell-output cell-output-stderr">
+<pre><code>Warning: Can&#39;t find CmdStan makefile to detect version number. Path may not
+point to valid installation.</code></pre>
+</div>
 </div>
 <div class="cell">
-<details class="code-fold"><summary>Code</summary><div class="sourceCode" id="cb9"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co"># Extract posterior predicted propensity scores</span></span>
+<details class="code-fold"><summary>Code</summary><div class="sourceCode" id="cb10"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co"># Extract posterior predicted propensity scores</span></span>
 <span><span class="va">pred_probs_chains</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://mc-stan.org/rstantools/reference/posterior_epred.html">posterior_epred</a></span><span class="op">(</span><span class="va">model_prop_scores</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 </div>
 <div class="cell">
-<details class="code-fold"><summary>Code</summary><div class="sourceCode" id="cb10"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">fullrun</span> <span class="op">&lt;-</span> <span class="fl">0</span>  <span class="co"># saves time</span></span>
+<details class="code-fold"><summary>Code</summary><div class="sourceCode" id="cb11"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">fullrun</span> <span class="op">&lt;-</span> <span class="fl">0</span>  <span class="co"># saves time</span></span>
 <span></span>
 <span><span class="kw">if</span><span class="op">(</span><span class="va">fullrun</span><span class="op">)</span><span class="op">{</span></span>
 <span></span>
@@ -5392,7 +5395,7 @@ border-radius: 5px;
 <strong>Note:</strong> It’s challenging to visualize how we perform this using the Bayesian method because we have calculated 1500 propensity scores for each patient. To make it visualizable, we have chosen to take the mean of the propensity scores and then calculate the IPTWs based on the mean.
 </p>
 <div class="cell">
-<details class="code-fold"><summary>Code</summary><div class="sourceCode" id="cb11"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co"># We based our graph on the means of the propensity scores and the IPTW</span></span>
+<details class="code-fold"><summary>Code</summary><div class="sourceCode" id="cb12"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co"># We based our graph on the means of the propensity scores and the IPTW</span></span>
 <span><span class="co"># Calculate the mean propensity scores and IPTW</span></span>
 <span><span class="va">mean_propensity</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/colSums.html">colMeans</a></span><span class="op">(</span><span class="va">pred_probs_chains</span><span class="op">)</span></span>
 <span><span class="va">df_with_weights</span> <span class="op">&lt;-</span> <span class="va">df</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
@@ -5440,7 +5443,7 @@ border-radius: 5px;
 <span class="header-section-number">4.1</span> Length of hospital stay regression</h2>
 <p>To evaluate the impact of the JPH intervention on the length of hospital stay (a numeric variable and measured in days), we perform a Gaussian regression analysis.</p>
 <div class="cell">
-<details class="code-fold"><summary>Code</summary><div class="sourceCode" id="cb12"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">fullrun</span> <span class="op">&lt;-</span> <span class="fl">0</span>  <span class="co"># saves time</span></span>
+<details class="code-fold"><summary>Code</summary><div class="sourceCode" id="cb13"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">fullrun</span> <span class="op">&lt;-</span> <span class="fl">0</span>  <span class="co"># saves time</span></span>
 <span></span>
 <span><span class="kw">if</span> <span class="op">(</span><span class="va">fullrun</span><span class="op">)</span> <span class="op">{</span></span>
 <span>  </span>
@@ -5498,7 +5501,7 @@ border-radius: 5px;
 </details>
 </div>
 <div class="cell">
-<details class="code-fold"><summary>Code</summary><div class="sourceCode" id="cb13"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html">ggplot</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">LDResults</span>, <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html">aes</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">LDEstimate</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
+<details class="code-fold"><summary>Code</summary><div class="sourceCode" id="cb14"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html">ggplot</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">LDResults</span>, <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html">aes</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">LDEstimate</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_density.html">geom_density</a></span><span class="op">(</span>fill <span class="op">=</span> <span class="st">&quot;steelblue&quot;</span>, alpha <span class="op">=</span> <span class="fl">0.3</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggtheme.html">theme_bw</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_abline.html">geom_vline</a></span><span class="op">(</span>xintercept <span class="op">=</span> <span class="op">-</span><span class="fl">1</span> <span class="op">*</span> <span class="va">Effect_LOS</span>, </span>
@@ -5522,7 +5525,7 @@ border-radius: 5px;
 <span class="header-section-number">4.2</span> Parental stress regression</h2>
 <p>Next, we analyze the impact of the JPH intervention on parental stress levels, which are measured on an ordinal scale. We use a cumulative model to estimate the treatment effect on stress levels. The cumulative model estimates the probability that the stress level exceeds a certain threshold, given the treatment and control conditions.</p>
 <div class="cell">
-<details class="code-fold"><summary>Code</summary><div class="sourceCode" id="cb14"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">Number_regressions</span> <span class="op">&lt;-</span> <span class="fl">1500</span>  <span class="co"># moet 1500 zijn</span></span>
+<details class="code-fold"><summary>Code</summary><div class="sourceCode" id="cb15"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">Number_regressions</span> <span class="op">&lt;-</span> <span class="fl">1500</span>  <span class="co"># moet 1500 zijn</span></span>
 <span><span class="va">fullrun</span> <span class="op">&lt;-</span> <span class="fl">0</span> <span class="co"># saves time</span></span>
 <span></span>
 <span><span class="kw">if</span><span class="op">(</span><span class="va">fullrun</span><span class="op">)</span><span class="op">{</span></span>
@@ -5585,7 +5588,7 @@ border-radius: 5px;
 </details>
 </div>
 <div class="cell">
-<details class="code-fold"><summary>Code</summary><div class="sourceCode" id="cb15"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html">ggplot</a></span><span class="op">(</span><span class="va">Results</span>, <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html">aes</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">Estimate</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
+<details class="code-fold"><summary>Code</summary><div class="sourceCode" id="cb16"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html">ggplot</a></span><span class="op">(</span><span class="va">Results</span>, <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html">aes</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">Estimate</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_histogram.html">geom_histogram</a></span><span class="op">(</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html">aes</a></span><span class="op">(</span>y <span class="op">=</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes_eval.html">after_stat</a></span><span class="op">(</span><span class="va">density</span><span class="op">)</span><span class="op">)</span>, binwidth <span class="op">=</span> <span class="fl">0.05</span>, fill <span class="op">=</span> <span class="st">&quot;steelblue&quot;</span>, alpha <span class="op">=</span> <span class="fl">0.7</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_density.html">geom_density</a></span><span class="op">(</span>color <span class="op">=</span> <span class="st">&quot;steelblue4&quot;</span>, linewidth <span class="op">=</span> <span class="fl">1</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html">labs</a></span><span class="op">(</span>x <span class="op">=</span> <span class="st">&quot;Estimate&quot;</span>, y <span class="op">=</span> <span class="st">&quot;Density&quot;</span><span class="op">)</span> <span class="op">+</span></span>
