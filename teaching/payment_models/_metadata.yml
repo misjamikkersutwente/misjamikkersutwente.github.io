@@ -1,0 +1,16 @@
+# Override global metadata settings for the book
+
+# Keep the TOC settings for the book if needed
+toc: true
+toc-title: Contents
+toc-location: left
+
+# Execute settings specific to the book
+execute:
+  echo: true
+  message: true
+  warning: true
+
+format:
+  html:
+    code-fold: true    # Disable code folding for the book (or adjust as needed)

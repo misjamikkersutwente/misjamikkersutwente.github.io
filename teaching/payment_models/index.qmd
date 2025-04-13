@@ -1,0 +1,24 @@
+# Preface {.unnumbered}
+
+Welcome to the **Payment Models in Healthcare** e-book.
+
+This book explores various payment models used in healthcare, including their mechanisms, advantages, and challenges. The goal is to help readers understand the landscape of healthcare payments and how they impact healthcare delivery and outcomes.
+
+## Structure of the Book
+
+The book is organized into several chapters, each addressing a key aspect of payment models in healthcare:
+
+- [Introduction](intro.qmd): An overview of healthcare payment models.
+- [Chapter 1: Fee-for-Service](chapter1.qmd): Understanding fee-for-service models.
+- [Summary](summary.qmd): Key takeaways and concluding thoughts.
+- [References](references.qmd): References and further reading.
+
+Feel free to navigate through the chapters using the sidebar or the links above.
+
+## About the Author
+
+**Misja Mikkers** is a professor of Health Systems Engineering at the University of Twente, specializing in healthcare systems and payment models.
+
+## Acknowledgments
+
+Thanks to

@@ -20,7 +20,11 @@ website:
       - text: "Research"
         href: research/index.qmd
       - text: "Teaching"
-        href: teaching/index.qmd
+        menu:
+          - text: "Courses"
+            href: teaching/index.qmd
+          - text: "Payment Models E-book"
+            href: teaching/payment_models/index.html
       
     
     # social media handles
@@ -41,7 +45,8 @@ website:
 project:
   type: website
   output-dir: docs
-
+ 
+ 
   preview: 
     port: 22222
     browser: true

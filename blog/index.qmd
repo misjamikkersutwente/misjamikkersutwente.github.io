@@ -6,8 +6,15 @@ page-layout: full
 description-meta: "Welcome to my blog."
 
 listing:
+  - id: posts_2025
+    contents: 
+       - "Bayesian_Matching/index.qmd"
+    sort: "date desc"
+    template: ../html/blog/listing.ejs
+    categories: true
   - id: posts_2024
     contents: 
+       - "Eigen risico/index.qmd"
        - "Poweranalysis/index.qmd"
     sort: "date desc"
     template: ../html/blog/listing.ejs
@@ -27,6 +34,11 @@ comments: false
 ---
 
 Welcome to my blog. Here you will find a collection of posts on various topics.
+
+## 2025
+
+:::{#posts_2025}
+:::
 
 ## 2024
 

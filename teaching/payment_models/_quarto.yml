@@ -1,0 +1,27 @@
+project:
+  type: book
+  output-dir: ../../docs/teaching/payment_models   # Set the output directory to the docs folder
+
+book:
+  title: "Payment Models in Healthcare"
+  author: "Misja Mikkers"
+  date: today
+  date-format: long
+  chapters:
+    - index.qmd
+    - intro.qmd
+    - chapter1.qmd
+    - summary.qmd
+    - references.qmd
+
+bibliography: references.bib
+
+format:
+  html:
+    theme: cosmo   # You can experiment with other themes as well
+    toc: true      # Table of contents enabled
+    toc-depth: 2   # Controls how many heading levels appear in the sidebar
+    number-sections: true   # Adds numbering to sections
+    code-link: true  # Adds links to code lines for easy reference
+  pdf:
+    documentclass: scrreprt
