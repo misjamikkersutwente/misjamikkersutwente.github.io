@@ -19,12 +19,13 @@ website:
         href: blog/index.qmd
       - text: "Research"
         href: research/index.qmd
+      - text: "Inaugural Address"
+        href: inaugural_address/index.html
       - text: "Teaching"
         menu:
           - text: "Courses"
             href: teaching/index.qmd
-          - text: "Payment Models E-book"
-            href: teaching/payment_models/index.html
+         
       
     
     # social media handles
