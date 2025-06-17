@@ -1,20 +1,5 @@
 # Introduction
 
-```{r packages and settings, include= FALSE, eval=TRUE}
-
-knitr::opts_chunk$set(message = FALSE, warning = FALSE,
-                      echo = FALSE)
-
-options(scipen=999)
-
-library(tidyverse) # for data manipulation and plotting
-library(brms)
-library(broom.mixed)
-library(cowplot)
-
-
-```
-
 In many countries governments, policymakers, and researchers are concerned about the rising cost of healthcare. Health spending continues to grow faster than economic growth in most countries, and this trend is projected to continue as populations age and medical innovation accelerates. The European Commission, OECD, WHO, and national advisory bodies such as the WRR in the Netherlands have all expressed concern over the long-term sustainability of healthcare systems (@europeas20212021 , @OECD_2023, @Visser_Boot_Werner_Riel_Gijsberts_2021).
 
 Yet, rising costs are not necessarily a sign of failure. Much of this spending reflects medical progress. Advances in treatment and technology have led to significantly improved survival rates for conditions such as cancer and cardiovascular disease (@OECD_2023, @cutler2006value).
@@ -38,6 +23,22 @@ To illustrate these findings, I present results for six countries that are geogr
 Despite institutional differences, the estimated trends in health expenditure were remarkably similar. The global average increase in health spending was estimated at 0.10 percentage points per year (95% CrI: 0.08, 0.12). Country-specific trends were clustered closely around this global mean: the Netherlands (0.128), Belgium (0.135), Germany (0.104), France (0.102), and Denmark (0.096). The United Kingdom was the exception, with a steeper trend of 0.181 (95% CrI: 0.152, 0.211). These results suggest that despite different organizational models, long-term health spending trajectories, and by implication, some aspects of performance, are quite similar across countries.
 
 These findings are visualized in the figure below, where the observed and predicted health expenditures (with 95% credible intervals) are plotted for each country.
+
+
+```{r packages and settings, include= FALSE, eval=TRUE}
+
+knitr::opts_chunk$set(message = FALSE, warning = FALSE,
+                      echo = FALSE)
+
+options(scipen=999)
+
+library(tidyverse) # for data manipulation and plotting
+library(brms)
+library(broom.mixed)
+library(cowplot)
+
+
+```
 
 ```{r health expenditure}
 
