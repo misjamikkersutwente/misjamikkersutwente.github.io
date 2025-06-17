@@ -1,0 +1,71 @@
+# Learning Health Systems
+
+Recognizing that much of the valuable knowledge in healthcare is local and that the world is constantly changing, we understand that there is no static solution or universal recipe for an optimal system. This uncertainty and variability further justify the need for decentralized decision-making, where local actors can respond to specific needs and circumstances. However, to ensure that these decentralized systems evolve effectively, we require mechanisms for learning and adaptation.
+
+This is where Bayesian learning and the use of causal models become instrumental. One of the most powerful aspects of Bayesian methods is that they force us to explicitly formulate our prior beliefs, including our assumptions about the causal relationships within the healthcare system. This process requires us to engage in deep reflection:
+
+-   What do we think will happen?
+
+-   Why do we believe this?
+
+-   On what evidence or reasoning are we basing these beliefs?
+
+-   How certain are we about these beliefs?
+
+-   What are the causal mechanisms at play?
+
+Importantly, we recognize that we cannot establish causality from data alone; instead, we need to construct causal models that represent our understanding of how interventions affect outcomes. These models exist outside of the data—they are informed by theory, expert knowledge, and prior evidence. By incorporating these causal models into our prior beliefs, we can more effectively simulate and evaluate the potential impact of interventions.
+
+Once we have established our prior beliefs and causal models, Bayesian methods enable us to update these beliefs with new data systematically. As we gather real-world evidence from the implementation of interventions or observe changes in patient outcomes, we can refine our models to reflect this new information. This iterative process ensures that our strategies remain relevant and effective in a dynamic environment.
+
+This is where Bayesian learning and the use of causal models become instrumental. One of the most powerful aspects of Bayesian methods is that they force us to explicitly formulate our prior beliefs, including our assumptions about the causal relationships within the healthcare system. This process requires us to engage in deep reflection:
+
+-   What do we think will happen?
+
+-   Why do we believe this?
+
+-   On what evidence or reasoning are we basing these beliefs?
+
+-   How certain are we about these beliefs?
+
+-   What are the causal mechanisms at play?
+
+Importantly, we recognize that we cannot establish causality from data alone; instead, we need to construct causal models that represent our understanding of how interventions affect outcomes. These models exist outside of the data—they are informed by theory, expert knowledge, and prior evidence. By incorporating these causal models into our prior beliefs, we can more effectively simulate and evaluate the potential impact of interventions.
+
+Once we have established our prior beliefs and causal models, Bayesian methods enable us to update these beliefs with new data systematically. As we gather real-world evidence from the implementation of interventions or observe changes in patient outcomes, we can refine our models to reflect this new information. This iterative process ensures that our strategies remain relevant and effective in a dynamic environment.
+
+In practical terms, integrating Bayesian learning and causal modeling into health systems engineering allows us to:
+
+-   Modeling Patient Pathways: Propose using generative models to simulate patient journeys through the healthcare system. By creating these models based on our prior beliefs and causal assumptions, we can capture real-world complexities and test various scenarios.
+
+-   Collaborate with Experts: Work closely with clinicians, policymakers, and other stakeholders to build models that incorporate expert knowledge and reflect actual mechanisms influencing patient outcomes.
+
+-   Informing Decision-Making: Use these models to identify potential areas for improvement and test the impact of interventions before implementation. This approach reduces risks associated with real-world trials and helps prioritize the most promising strategies.
+
+-   Evaluate Interventions Before Implementation: Assess the plausibility and effectiveness of proposed changes in a virtual setting, allowing us to refine interventions based on simulated outcomes.
+
+-   Develop Business Cases for Promising Interventions: Understand the potential outcomes and associated uncertainties, enabling informed decisions about resource allocation.
+
+-   Consider Financial and Organizational Consequences: Anticipate how changes might affect incentive structures, governance, and funding flows, allowing for proactive management of these factors.
+
+-   Support Decentralized Decision-Making: Provide actionable insights at the local level, empowering regional entities to make evidence-based decisions tailored to their specific contexts.
+
+By embracing this approach, we acknowledge that while data is essential, it is our models outside the data—our causal understanding and prior beliefs—that enable us to interpret the data meaningfully and make informed decisions.
+
+Combining yardstick competition with Bayesian learning and causal modeling creates a powerful synergy. While yardstick competition encourages regions to learn from each other through benchmarking, Bayesian methods provide a systematic framework for internal learning within each region. Regions can compare their prior beliefs, causal models, and updated findings, fostering a culture of transparency and shared learning that benefits the entire healthcare system.
+
+This integrated approach supports decentralized decision-making by providing local actors with the tools and knowledge they need to respond effectively to their unique challenges. It also facilitates continuous improvement and adaptation, essential in a healthcare landscape characterized by constant change and uncertainty.
+
+-   Explain Bayesian learning and prior beliefs.
+
+<!-- -->
+
+-   Importance of causal models for intervention design.
+
+<!-- -->
+
+-   How to support decentralized, adaptive systems.
+
+<!-- -->
+
+-   The link with benchmarking, simulation, and regional experimentation.

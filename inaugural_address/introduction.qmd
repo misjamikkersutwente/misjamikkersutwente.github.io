@@ -1,0 +1,424 @@
+# Introduction
+
+```{r packages and settings, include= FALSE, eval=TRUE}
+
+knitr::opts_chunk$set(message = FALSE, warning = FALSE,
+                      echo = FALSE)
+
+options(scipen=999)
+
+library(tidyverse) # for data manipulation and plotting
+library(brms)
+library(broom.mixed)
+library(cowplot)
+
+
+```
+
+In many countries governments, policymakers, and researchers are concerned about the rising cost of healthcare. Health spending continues to grow faster than economic growth in most countries, and this trend is projected to continue as populations age and medical innovation accelerates. The European Commission, OECD, WHO, and national advisory bodies such as the WRR in the Netherlands have all expressed concern over the long-term sustainability of healthcare systems (@europeas20212021 , @OECD_2023, @Visser_Boot_Werner_Riel_Gijsberts_2021).
+
+Yet, rising costs are not necessarily a sign of failure. Much of this spending reflects medical progress. Advances in treatment and technology have led to significantly improved survival rates for conditions such as cancer and cardiovascular disease (@OECD_2023, @cutler2006value).
+
+It is important, however, to assess not just how much we spend, but also how we allocate this spending. As @cutler2006value observed, while increased spending since the 1960s has often provided reasonable value, some areas, such as residential elderly care since the 1980s have seen more modest gains at increasingly higher cost. This underlines the importance of considering not only the volume of spending, but whether resources are allocated in ways that produce the best outcomes.
+
+In my inaugural address at Tilburg University (@mikkers2016dutch), I argued that despite differences in institutional design, healthcare systems in Western countries are similar in many ways, not only in the challenges they face, such as rising costs, aging populations, and workforce pressure, but also in their overall performance. Countries with very different financing models, such as tax-funded systems and social insurance schemes, tend to show comparable trends in health spending and similar gains in life expectancy and survival.
+
+To support this claim, I estimated a Bayesian multilevel regression model using health expenditure data from 29 OECD countries, available through the [OECD Data Explorer](https://data-explorer.oecd.org/). The model included country-specific intercepts and slopes for health spending as a share of GDP, with year (centered) as a continuous predictor. This structure allowed us to estimate both a global trend and country-level deviations. A Bayesian approach was chosen for its natural fit with hierarchical data, full uncertainty quantification, and interpretable 95% credible intervals.
+
+To illustrate these findings, I present results for six countries that are geographically and economically close to the Netherlands, but differ in healthcare system type:
+
+-   Germany and Belgium operate Bismarckian social health insurance systems with uniform benefits and centrally negotiated prices.
+
+-   France combines public insurance with a mix of public and private provision.
+
+-   Denmark and the United Kingdom have Beveridge-type, tax-funded systems with strong public provision.
+
+-   The Netherlands, while originally Bismarckian, introduced regulated competition in 2005.
+
+Despite institutional differences, the estimated trends in health expenditure were remarkably similar. The global average increase in health spending was estimated at 0.10 percentage points per year (95% CrI: 0.08, 0.12). Country-specific trends were clustered closely around this global mean: the Netherlands (0.128), Belgium (0.135), Germany (0.104), France (0.102), and Denmark (0.096). The United Kingdom was the exception, with a steeper trend of 0.181 (95% CrI: 0.152, 0.211). These results suggest that despite different organizational models, long-term health spending trajectories, and by implication, some aspects of performance, are quite similar across countries.
+
+These findings are visualized in the figure below, where the observed and predicted health expenditures (with 95% credible intervals) are plotted for each country.
+
+```{r health expenditure}
+
+#cmdstanr::set_cmdstan_path("C:/Users/MikkersMC/Stan/cmdstan-2.34.1")
+
+he <- read.csv("Data/Expenditure.csv") %>%
+  select(Country = Reference.area, Year = TIME_PERIOD, Exp = OBS_VALUE) %>%
+  mutate(Year_c = Year - mean(Year))
+
+
+fullrun <- 0  
+
+if(fullrun){
+
+model1 <- brm(
+            formula = Exp ~ Year_c + (1 + Year_c | Country), 
+            data   = he,
+            family = gaussian(),
+            warmup = 10000, 
+            iter   = 25000, 
+            chains = 4, 
+            cores  = 4,
+            seed = 123,
+            control = list(adapt_delta = 0.9999999, max_treedepth = 15),
+            backend = "cmdstanr",
+            silent = TRUE)
+
+saveRDS(model1, "model1.rds")
+} else {
+ model1  <- readRDS("model1.rds")}
+
+preds1 <-predict(model1, newdata = he)
+
+df_preds1 <- as.tibble(preds1)
+
+hereg <- cbind(he, df_preds1) 
+
+
+selected_countries <- c("Netherlands", "Germany", "Belgium", "France", "Denmark", "United Kingdom")
+
+
+plot_data <- hereg %>% 
+  filter(Country %in% selected_countries)
+
+ggplot(plot_data, aes(x = Year, y = Exp)) +
+  geom_point(color = "black", size = 1.5, alpha = 0.7) +                        # observed values
+  geom_line(aes(y = Estimate), color = "blue", linewidth = 1) +                # predicted mean
+  geom_ribbon(aes(ymin = Q2.5, ymax = Q97.5), fill = "blue", alpha = 0.2) +    # 95% CI
+  facet_wrap(~ Country, ncol = 3, scales = "fixed") +                          # fixed y scale
+  scale_y_continuous(limits = c(0, 15)) +                                      # consistent y-axis
+  scale_x_continuous(breaks = seq(1992, 2024, by = 10)) +                       # fewer x-axis labels
+  labs(
+   
+    x = "",
+    y = "Health Expenditure (% GDP)",
+    caption = "Source: OECD Data Explorer\n retrieved May 3, 2025"
+  ) +
+  theme_bw() +
+  theme(
+    axis.text.x = element_text(angle = 0, hjust = 0.5),                      strip.text = element_text(face = "bold")                                   
+  ) +
+  theme(
+  axis.text.x = element_text(size = 9, angle = 0, hjust = 0.5),
+  strip.text = element_text(face = "plain", size = 10),
+  panel.spacing = unit(0.7, "lines")  # increase space between facets
+)
+
+
+```
+
+Yet the financial burden is only part of the picture. A more pressing issue stems from demographic change. While healthcare costs have long been the focus of reform debates, the real bottleneck of the future is likely to be workforce capacity.
+
+As seen in the graph below, the age distribution of the Dutch population has shifted significantly over time. In 1950, 60.2% of the population was of working age (18–67), while just 5.7% was 67 or older. By 2005, the working-age group had increased slightly to 66.5%, with the elderly population doubling to 11.5%. In 2025, projections show 64.6% working age and 17.1% aged 67 or older. Looking ahead to 2070, the working-age share is expected to fall further to 59.5%, while the proportion of people aged 67 and above will rise to 22.7%.
+
+```{r read popdata}
+
+fullrun <- 0
+
+if (fullrun) {
+
+folder_path <- "../Popdata/cbs_pyramid_data"
+
+# List all CSV files
+all_files <- list.files(folder_path, pattern = "\\.csv$", full.names = TRUE)
+
+# Function to read and clean one file
+read_population_file <- function(file_path) {
+  # Read the CSV (assumes semicolon-separated)
+  df <- read_csv2(file_path, col_types = cols(.default = "c"))
+
+  # Remove rows with missing age labels
+  df <- df %>% filter(!is.na(Leeftijd), Leeftijd != "")
+
+  # Clean 
+  df <- df %>%
+    mutate(
+      Mannen = as.numeric(str_remove_all(Mannen, "\\s")),
+      Vrouwen = as.numeric(str_remove_all(Vrouwen, "\\s"))
+    )
+
+  # Extract year from filename
+  year <- str_extract(basename(file_path), "\\d{4}") %>% 
+    as.integer()
+  
+  df$Jaar <- year
+
+  return(df)
+}
+
+# Read and combine all CSVs
+combined_data <- map_dfr(all_files, read_population_file)
+
+ saveRDS(combined_data, "../Data/popdata.RDS")
+
+} else {
+  
+  combined_data <- readRDS("Data/popdata.RDS")
+
+}
+
+na_rows <- combined_data %>%
+  filter(is.na(Mannen) | is.na(Vrouwen))
+
+
+df <- combined_data %>%
+  filter(!is.na(Mannen) & !is.na(Vrouwen)) %>%
+  pivot_longer(cols = c(Mannen, Vrouwen), names_to = "Geslacht", values_to = "Aantal") %>%
+  mutate(
+    Geslacht = recode(Geslacht, Mannen = "Male", Vrouwen = "Female"),
+    Geslacht = factor(Geslacht, levels = c("Male", "Female")),
+    Leeftijd_num = as.integer(str_extract(Leeftijd, "\\d+")),
+    Aantal = ifelse(Geslacht == "Male", -Aantal, Aantal)    ) %>%
+  group_by(Jaar) %>%
+  mutate(Percentage = Aantal / sum(abs(Aantal)) * 100) %>%
+  ungroup()
+
+annot_perc <- df %>%
+  group_by(Jaar) %>%
+  summarise(
+    perc_working = sum(abs(Aantal[Leeftijd_num >= 18 & Leeftijd_num <= 67])) / sum(abs(Aantal)) * 100,
+    perc_elderly = sum(abs(Aantal[Leeftijd_num > 67])) / sum(abs(Aantal)) * 100
+  )
+
+df_anim_perc <- df %>%
+  left_join(annot_perc, by = "Jaar")
+
+# Functie om één piramide-plot te maken voor een specifiek jaar
+make_pyramid_plot <- function(df, year) {
+  df_year <- df %>% filter(Jaar == year)
+
+  annot <- df_year %>%
+    summarise(
+      perc_working = sum(abs(Aantal[Leeftijd_num >= 18 & Leeftijd_num <= 67])) / sum(abs(Aantal)) * 100,
+      perc_elderly = sum(abs(Aantal[Leeftijd_num > 67])) / sum(abs(Aantal)) * 100
+    )
+
+  ggplot(df_year, aes(x = Leeftijd_num, y = Percentage, fill = Geslacht)) +
+    geom_rect(xmin = 18, xmax = 67, ymin = -Inf, ymax = Inf, fill = "green", alpha = 0.01) +
+    geom_col(width = 1) +
+    coord_flip() +
+    scale_fill_manual(values = c("Male" = "steelblue", "Female" = "firebrick")) +
+    scale_x_continuous(name = NULL, breaks = seq(0, 100, 10)) +
+    scale_y_continuous(name = NULL, labels = function(x) paste0(abs(x), "%")) +
+    annotate("text", x = 45, y = -3, label = paste0("18–67: ", round(annot$perc_working, 1), "%"), hjust = 0, size = 3.5) +
+    annotate("text", x = 85, y = -3, label = paste0("67+: ", round(annot$perc_elderly, 1), "%"), hjust = 0, size = 3.5) +
+    annotate("text", x = 100, y = 0, label = paste0("Year: ", year), size = 5, fontface = "bold") +
+    theme_minimal(base_size = 10) +
+    theme(legend.position = "none")
+}
+
+# Genereer de vier plots
+years <- c(1950, 2005, 2025, 2070)
+plots <- lapply(years, function(y) make_pyramid_plot(df, y))
+
+# Combineer ze in een 2x2 grid
+# 2x2 grid zonder labels
+main_plot <- plot_grid(plotlist = plots, ncol = 2)
+
+
+plot_grid(
+  main_plot,
+  ggdraw() + 
+    draw_label("Source: CBS", 
+               fontface = 'italic', 
+               x = 1, hjust = 1, 
+               size = 10),  
+  ncol = 1,
+  rel_heights = c(1, 0.05)
+)
+
+
+```
+
+This rising dependency ratio means fewer working people supporting a growing population of elderly citizens, many of whom will need increasingly complex care. If current trends continue, a disproportionate share of the workforce would be required in healthcare simply to sustain current service levels. This is not financially, politically, or socially sustainable.
+
+To better understand this evolution, it is helpful to apply the lens of @cutler2002, who described healthcare reforms as evolving in three broad phases. These phases are clearly visible in the Dutch context (see e.g. @schut2003zorg).
+
+1.  Access Expansion (roughly 1945–1980 in the Netherlands): In the decades following the Second World War, the main focus was to increase access to healthcare. Hospitals were expanded, insurance coverage was broadened, and the foundations of the modern welfare state were established. The priority was equity: ensuring that everyone could receive care when needed.
+
+2.  Cost Containment (roughly 1980–2000): Rising healthcare expenditures led to a shift in focus. The oil shocks and financial crises of the late 1970s and early 1980s led to budgetary concerns. Policymakers introduced price regulation, budget ceilings, and efficiency incentives. In this phase, a predecessor of my former employer, the Dutch Healthcare Authority, was created to regulate the health care sector. The measures were effective in curbing spending growth, but came at a cost: waiting lists lengthened, and public satisfaction declined.
+
+3.  Incentives and Market Mechanisms (2000s onward): In response to the shortcomings of the cost-containment phase, a third wave of reform started in 2005: the Netherlands introduced regulated competition, insurer choice, and performance-based payment mechanisms. The goal was to improve process efficiency, in other words, to do things right.
+
+Each phase reflected the priorities of its time: from equity to sustainability to efficiency.
+
+But it is worth asking: was it a coincidence that we introduced competition and choice-based systems in 2005, just when the ratio of working-age people to older citizens was at its most favorable? Labor was still abundant, and a model based on patient choice and provider competition was feasible.
+
+Today, that context is changing rapidly. The real question going forward is not just how (cost) efficiently we can deliver care, but what care we deliver, where, and to whom. The focus is shifting from process efficiency to allocative efficiency: from doing things right to doing the right things.
+
+There is good reason to believe we are not allocating our healthcare resources to the right places. As the @OECD_2023 puts it:
+
+> “Unhealthy lifestyles and poor environments cause millions of people to die prematurely. Smoking, harmful alcohol use, physical inactivity and obesity are the root cause of many chronic conditions.”
+
+In other words, many of our most pressing health problems do not originate in hospitals or GP practices, but in daily life. This point is illustrated in new research using Dutch administrative data. @danesh2024 show that health inequality in the Netherlands begins early: by age 35, individuals in the bottom half of the income distribution already carry the same chronic disease burden as 50-year-olds in the top half. This is not just the result of reverse causality (i.e., sicker people earning less), but primarily due to faster health deterioration among low-income individuals. The researchers conclude that socioeconomic and geographic factors, not individual behavior alone, account for most of the difference.
+
+This pattern is also visible at the local level. The figure below plots average income against the prevalence of chronic conditions for neighborhoods in Amsterdam. It shows a clear picture: wealthier areas tend to have lower rates of chronic disease. Neighborhoods in Amsterdam-Noord, highlighted in red, illustrate how certain areas consistently perform worse across both dimensions: suggesting social disparities that cannot be explained by healthcare access alone.
+
+```{r amsterdam}
+
+# See for more explantion: Folder Graphs
+# I changed the colors compared to the earlier one (just Adam-Noord versus the rest) and added labels
+##Beide bestanden download 29 november 2024
+
+# Bron: https://opendata.cbs.nl/#/CBS/nl/dataset/85318NED/table?searchKeywords=inkomen%20gendringen
+
+Inkomen <- read.csv("Data/Kerncijfers_wijken_en_buurten_2022_29112024_123538.csv", sep = ";") %>%
+  select(Wijk = `Wijken.en.buurten`,
+         Income_Recipients = Inkomen.Inkomen.van.personen.Aantal.inkomensontvangers....aantal.,
+         Income = `Inkomen.Inkomen.van.huishoudens.Gem..gestandaardiseerd.inkomen.van.huish..x.1.000.euro.`)
+
+# bron https://statline.rivm.nl/#/RIVM/nl/dataset/50120NED/table
+
+
+Gezondheid <- read.csv("Data/Gezondheid_per_wijk_en_buurt__2022_29112024_123551.csv", sep = ";") %>%
+  mutate(`Regioaanduiding.Soort.regio..omschrijving.` = trimws(`Regioaanduiding.Soort.regio..omschrijving.`)) %>%
+  filter(`Regioaanduiding.Soort.regio..omschrijving.` == "Wijk") %>%
+  select(Wijk = `Wijken.en.buurten`,
+         Chronic = Lichamelijke.gezondheid.Eén.of.meer.langdurige.aandoeningen....)
+
+ADAM <- left_join(Gezondheid, Inkomen, by = "Wijk") %>%
+  mutate(Income = as.numeric(Income),
+         Chronic = as.numeric(Chronic)) %>%
+  drop_na() %>%
+    group_by(Wijk) %>%
+  filter(
+    # Zitten wat dubbelingen in
+    (Wijk == "Betondorp" & Income == 27.6) | #income is 27.5/27.6 nagenoeg gelijk
+    (Wijk == "De Punt" & row_number() == 1) | # dubbele waarde
+    (Wijk == "Middelveldsche Akerpolder" & Income_Recipients == max(Income_Recipients)) | # hier gewoon de grotere eenheid gekozen (vermoedelijk hebben een wijk en een buurt dezelfde naam)
+    !(Wijk %in% c("Betondorp", "De Punt", "Middelveldsche Akerpolder")) # Keep all other rows unchanged
+  ) %>%
+  ungroup() %>%
+  mutate(
+    Area = case_when(
+      Wijk %in% c(
+        "Volewijck", "IJplein/Vogelbuurt", "Tuindorp Nieuwendam",
+        "Tuindorp Oostzaan", "Oostzanerwerf", "Kadoelen", 
+        "Waterlandpleinbuurt", "Buikslotermeer", "Banne Buiksloot",
+        "Noordelijke IJ-oevers West", "Elzenhagen"
+      ) ~ "Amsterdam-Noord",
+      Wijk %in% c(
+        "Bijlmer Centrum (D,F,H)", "Bijlmer Oost (E,G,K)", 
+        "Nellestein", "Holendrecht/Reigersbos", "Gein"
+      ) ~ "Amsterdam-Zuidoost",
+      Wijk %in% c(
+        "Slotermeer-Noordoost", "Slotermeer-Zuidwest", "Geuzenveld",
+        "Osdorp-Oost", "Osdorp-Midden", "De Punt", 
+        "Middelveldsche Akerpolder", "Slotervaart Noord", 
+        "Overtoomse Veld", "Westlandgracht", "Sloter-/Riekerpolder",
+        "Slotervaart Zuid"
+      ) ~ "Amsterdam Nieuw-West",
+      TRUE ~ "Other City Districts"
+    ),
+    Noorderlingen = case_when(Area == "Amsterdam-Noord" ~ "Amsterdam-Noord", 
+                              TRUE ~ "Other City Districts")
+  )
+
+# Split tibbles to put Amsterdam-Noord on top
+
+Adam_rest <- ADAM %>%
+  filter(Area != "Amsterdam-Noord")
+
+Adam_noord <- ADAM %>%
+  filter(Area == "Amsterdam-Noord")
+
+ggplot(data = Adam_rest) + 
+  geom_point(aes(
+           x = Income,
+           y = Chronic,
+           size = Income_Recipients), 
+           alpha = 0.6, 
+           shape = 21, 
+           color = "black", 
+           fill = "gold") +
+  geom_point(data = Adam_noord, aes(x = Income, y = Chronic, 
+                                    size = Income_Recipients),
+             shape = 21, 
+           color = "black", 
+           fill = "firebrick") +
+  ggrepel::geom_label_repel(data = Adam_noord,
+                            aes(x = Income, y = Chronic, 
+                                    size = Income_Recipients,
+                                    label = Wijk),
+                            size = 2, max.overlaps = 20, color = "black") +
+  theme_bw() +
+  theme(legend.position = "bottom") +
+  labs(title = "Neighborhoods in Amsterdam",
+       subtitle = "2022",
+       x = "Average Standardized Household Income (x 1000 Euro)",
+       y = "Chronic Conditions (% of population)",
+       color = " ",
+       size = " ",
+       caption = "Source: CBS Statline") +
+   guides(size = "none") +
+  xlim(20,90) +
+  ylim(15,40)
+
+
+
+
+```
+
+Initiatives such as Beter Samen in Noord seek to address this challenge in practice. By initiating collaboration between healthcare providers, social workers, and community organizations, they aim to reduce health inequalities by intervening earlier and closer to the root causes. This means supporting people not only when they are sick, but also by shaping the environments in which they live, work, and grow up.
+
+A useful visual model based on @ansari2003public -shown below- illustrates this multi-level framework[^introduction-1]. It highlights how health outcomes are shaped by a wide range of factors, including socioeconomic position, psychosocial stressors, and broader community characteristics, not just individual behavior or the quality of healthcare services.
+
+[^introduction-1]: Over the last decades, a growing amount of research suggests that medical care is not the sole determinant of health outcomes. Rather, social determinants of health (SDH) play a large role in shaping health outcomes [@braveman2014social]. The WHO defines SDH as “the conditions in which people are born, grow, live, work, and age, and the fundamental drivers of these conditions” [@marmot2008closing]. This summary is based on research assistance by Finn Mikkers.
+
+
+```{r  echo=FALSE, message=FALSE, warning=FALSE}
+
+ggplot() +
+  # titel
+  geom_rect(aes(xmin = 42, xmax = 95, ymin = 85, ymax = 95), fill = "white", color = "black") +
+  annotate(geom = "text", x = 68.75, y = 90, label = "Healthcare System Attributes") +
+  # Health outcomes
+  geom_rect(aes(xmin = 84, xmax = 107, ymin = 60, ymax = 16), fill = "white", color = "black") + 
+  annotate(geom = "text", x = 83, y = 65, label = "Health Outcomes", size = 3, hjust = 0) +
+  annotate(geom = "text", x = 85, y = 50, label = "- Morbidity\n- Mortality\n- Integrated Measures\n  of Health", size = 2, hjust = 0, vjust = 1) +
+  # social determinants
+  geom_rect(aes(xmin = -1, xmax = 57, ymin = 60, ymax = 16), fill = "white", color = "black") +
+  
+   geom_rect(aes(xmin = 50, xmax = 80, ymin = -20, ymax = 5), fill = "white", color = "black") +
+   annotate(geom = "text", x = 25, y = 65, label = "Social Determinants of Health", size = 3) +
+  annotate(geom = "text", x = 0, y = 55, label = "Socio-Economic\nDeterminants", size = 2, hjust = 0) +
+  annotate(geom = "text", x = 2, y = 50, label = "- Age\n- Race\n- Education\n- Housing\n- Employment\n- Ethnicity", size = 2, hjust = 0, vjust = 1) +
+  annotate(geom = "text", x = 18, y = 55, label = "Psychosocial\nRisk Factors", size = 2, hjust = 0) +
+  annotate(geom = "text", x = 20, y = 50, label = "- Poor Social\n   Networks\n- Anxiety\n- Stress\n- Depression", size = 2, hjust = 0, vjust = 1) +
+  annotate(geom = "text", x = 36, y = 55, label = "Community and\nSociety", size = 2, hjust = 0) +
+  annotate(geom = "text", x = 38, y = 50, label = "- Crime Rate\n- Trust in Social\n   Institutions\n- Poverty Rate\n- Income Inequality\n- Tolerance of\n   Diversity", size = 2, hjust = 0, vjust = 1) +
+  
+  # disease inducing
+  annotate(geom = "text", x = 65, y = 9, label = "Disease-inducing Behaviors", size = 3, hjust = 0.5) +
+  annotate(geom = "text", x = 52, y = 4, label = "- Diet and Nutrition\n- Excercise\n   Smoking\n- Drug and Alcohol Use\n- Sexual Behavior", size = 2, hjust = 0, vjust = 1) +
+  geom_segment(aes(x = 22.5, y = -10.25, xend = 22.5, yend = 8),
+    arrow = arrow(length = unit(0.5, "cm"), type = "closed"),
+    size = 1) +
+  geom_segment(aes(x = 22.25, y = -10, xend = 45, yend = -10),
+    arrow = arrow(length = unit(0.5, "cm"), type = "closed"),
+    size = 1) +
+  geom_segment(aes(x = 95, y = -10, xend = 85, yend = -10),
+    arrow = arrow(length = unit(0.5, "cm"), type = "closed"),
+    size = 1) +
+  geom_segment(aes(x = 95, y = -10.3, xend = 95, yend = 8),
+    arrow = arrow(length = unit(0.5, "cm"), type = "closed"),
+    size = 1) +
+   geom_segment(aes(x = 22.5, y = 70, xend = 60.25, yend = 80),
+    arrow = arrow(length = unit(0.5, "cm"), type = "closed", ends = "both"),
+    size = 1) +
+   geom_segment(aes(x = 88, y = 70, xend = 76.25, yend = 80),
+    arrow = arrow(length = unit(0.5, "cm"), type = "closed", ends = "both"),
+    size = 1) +
+   geom_segment(aes(x = 60, y = 38, xend = 80, yend = 38),
+    arrow = arrow(length = unit(0.5, "cm"), type = "closed"),
+    size = 1) +
+  xlim(-5,107) +
+    ylim(-20, 100) +
+  theme_void() 
+  
+ 
+
+```
+
+This text presents a framework for rethinking healthcare under these conditions. It builds on the field of health systems engineering, which views healthcare as a complex, decentralized system of interdependent actors. In the chapters that follow, I explore the need for improved coordination (Chapter 2), better-aligned payment schemes (Chapter 3), and the consequences for our Dutch healthcare system (Chapter 4).

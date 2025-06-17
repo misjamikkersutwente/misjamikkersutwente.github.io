@@ -1,0 +1,5 @@
+# Introduction
+
+The healthcare sector stands at a crossroads, confronted with escalating costs, a looming shortage of medical professionals, and stark health disparities. In the Netherlands, individuals with lower incomes experience 20 fewer years of good health and a 6-year shorter life expectancy compared to their higher-income counterparts. These disparities are not solely due to unequal access to healthcare services but are deeply rooted in broader social determinants such as socio-economic status, education, behavior, and environment. For instance, people in lower-income brackets often face challenges like limited health literacy, substandard housing, and greater exposure to environmental risks. This highlights a critical imperative: shifting our focus from merely ensuring equal access to healthcare toward achieving equal health outcomes for all by addressing both healthcare delivery and the underlying factors that influence health and well-being.
+
+Dinges dinges

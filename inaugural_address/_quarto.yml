@@ -1,0 +1,39 @@
+project:
+  type: book
+  output-dir: ../docs/inaugural_address
+  
+
+website:
+  site-url: /inaugural_address/
+
+book:
+  title: "From Equal Access to Equal Outcomes"
+  author: "Misja Mikkers"
+  date: "May 8, 2025"
+  
+  date-format: long
+  chapters:
+    - cover.qmd
+    - index.qmd
+    - introduction.qmd
+    - coordination.qmd
+    - payment.qmd
+    - towards.qmd
+    - words.qmd
+    - references.qmd
+  search: true
+  
+bibliography: references.bib
+
+format:
+  html:
+    theme: cosmo
+    logo: logo.png
+  
+  pdf:
+    documentclass: scrreprt
+    titlepage: false
+    include-before-body: cover.tex
+
+editor: visual
+css: custom.css

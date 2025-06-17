@@ -1,0 +1,21 @@
+# Preface {.unnumbered}
+
+All Western countries face a growing challenge in healthcare: demand is rising due to an ageing population and ongoing technological innovation, while at the same time, the supply of healthcare workers is shrinking. This imbalance is not temporary or isolated, it seems to be structural and systematic. It forces us to rethink how we organize care, how we allocate resources, and what we define as good policy.
+
+At the same time, this challenge presents an opportunity, an opportunity to shift focus from equal access to healthcare to equal health outcomes. Research consistently shows that the main drivers of health lie outside the healthcare sector: poverty, education, housing, and social conditions all lead to chronic diseases and health inequality. The solution is not to spend ever more on healthcare, but to invest in what actually improves outcomes. Better results come not from doing more of the same, but from doing different things and doing the right things. That means rethinking how we collaborate across sectors, how we align incentives, and how we enable systems to learn and adapt.
+
+This text builds on my inaugural lecture at the University of Twente, where I argued that many healthcare reforms fail not due to a lack of effort or insight, but because they treat problems in isolation. Fragmented responsibilities, poorly aligned incentives, and non-existing or slow learning cycles make it difficult to provide coordinated, patient-centered care. Addressing these challenges requires a shift in perspective.
+
+Health Systems Engineering offers such a perspective. Drawing on contract theory, systems thinking, and institutional economics, it provides a framework to understand how governance structures, payment models, and cultural factors interact. The goal is to design systems that stimulate coordination, align incentives with what matters, and stimulate learning under uncertainty.
+
+This text goes beyond the lecture. It offers a more systematic and detailed treatment of the concepts, mechanisms, and international examples. Its central focus is on payment models, not because payments are the only thing that matters, but because they show how deeply our systems are influenced by incentives, rules, and organizational design. By analyzing these mechanisms in depth, I argue for the need of a more holistic view, one that connects financial structures to broader questions of governance and system design.
+
+The text concludes by looking ahead. What would a better system look like? What trade-offs are inevitable? And how can we experiment and learn our way towards more sustainable, fair, and effective healthcare systems?
+
+These are not just technical questions. They are political questions as well, about how we define public values, how we structure accountability, and how we govern collective resources in the face of demographic, social, and technological change.
+
+I hope this text contributes to that conversation in classrooms, research projects, policy discussions, and collaborative experiments in the field.
+
+I would like to thank Peter Bogetoft, Victora Shestalova, Merlijn Mikkers, Sandra Kompier and Finn Mikkers for their valuable comments on the text.
+
+The cover illustration was created by Caroline Berden, to whom I am grateful for her contribution to the visual identity of this book.

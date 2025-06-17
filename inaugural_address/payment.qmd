@@ -1,0 +1,154 @@
+# Payment Schemes and Incentives
+
+## Introduction: What Should a Good Payment System Achieve?
+
+All healthcare systems seem to face a critical problem: fragmentation of services and misaligned incentives both undermine the coordination of care and the delivery of high-value outcomes. Providers often focus on optimizing isolated subsystems rather than collaborating across the patient pathway. The design of payment systems has been widely recognized as a crucial element in healthcare system reform [see e.g @fainman2020design], influencing how resources and activities are allocated, how providers coordinate across patient pathways, and how financial risks are distributed.
+
+A good payment system must do more than simply reimburse services. It must:
+
+-   Encourage allocative efficiency: ensuring that resources are used for the right care, by the right provider of the right quality at the right time.
+
+-   Align incentives across the patient pathway: stimulate collaboration among different providers. The payment model should ensure that a participant is willing to be involved in a collaboration (which means that participation should not be loss making) and that the collaboration chooses actions that align with the overall desired outcome. 
+
+-   Reward prevention and outcomes, rather than volume of services.
+
+-   Be implementable and adaptable to changes and real-world complexity.
+
+To achieve these goals, we should carefully design payment models that influence provider behavior in ways that promote coordination, improve outcomes, control costs and avoid inefficient resource use. However, we should not expect to achieve a first-best optimum. As @arrowuncertainty famously argued, healthcare markets are subject to market failures, including information asymmetries, uncertainty, and externalities, that make perfect outcomes unfeasible. Instead, the aim is to design payment systems that move us closer to better outcomes within the constraints imposed by these imperfections.
+
+In this chapter, I answer four key questions that together guide the design of better payment schemes:
+
+1.  What should we pay for?
+
+2.  How should we pay?
+
+3.  Who will be paid?
+
+4.  Who pays?
+
+To improve coordination among healthcare providers and move beyond the optimization of isolated subsystems, we need to focus on how to align incentives within a framework of decentralized decision-making. This requires a careful examination of payment schemes.
+
+First, we must consider what to pay for. This involves defining the scope of services and patient pathways included in payment models. Moving away from fee-for-service models towards payment models for broader bundles of activities, population-based payments may encourage providers to focus on entire patient journeys rather than isolated treatments (see e.g. @bogetoft2019).
+
+Second, we need to determine how to pay. Exploring different payment methods, such as global budgets, capitation, or bundled payments, and integrating quality metrics into these schemes can help align provider incentives with desired health outcomes. This ensures that providers are rewarded not just for the quantity of services delivered but for the quality and effectiveness of care.
+
+Third, we should take into account the impact of payment models on organization and governance. Understanding how these financial models influence the organizational structures and governance mechanisms among healthcare providers is important. Better payment schemes can stimulate collaboration, reduce fragmentation, and give incentives for coordinated care delivery by encouraging providers to work together toward common goals.
+
+Fourth, we must consider the organization on the funder side. This involves examining the roles and interactions of governments, insurers, and municipalities as payers, and how their contracting relationships shape the funding and delivery of healthcare services. Clarifying these relationships can help streamline funding flows and reduce administrative complexities that hinder coordination.
+
+Through this analysis of payment schemes, I arrive at the conclusion that implementing regional budgets may be an effective way to enhance coordination and efficiency in the healthcare system. By allocating budgets based on predicted healthcare costs for specific populations, regional entities can be incentivized to tailor services to the needs of their communities. However, I should acknowledge that we have not yet fully resolved the complexities related to organization, governance, and the roles of funders in this model. These aspects are disccused further in Chapter 4.
+
+To stimulate continuous learning, improvement and the adoption of best practices, I propose utilizing yardstick competition. By benchmarking regions against one another, we can drive efficiency and quality improvements across the system. This method motivates regions to learn from each other, supporting a culture of innovation and collaboration that ultimately improves overall healthcare performance.
+
+## What to pay for?
+
+In designing more effective payment schemes, it is essential to determine what exactly we are paying for. Healthcare is not delivered in isolated events but as a series of interdependent activities along a patient pathway, from prevention to diagnosis, treatment, rehabilitation, and long-term follow-up. Poorly aligned payments fragment these pathways and undermine both quality and efficiency [@gaynor2015industrial].
+
+Traditional fee-for-service (FFS) models compensate individual services separately and therefore, tend to stimulate fragmentation. They reward volume rather than value and discourage coordination between providers [@porter2016pay].
+
+To overcome these inefficiencies, payment models should cover entire care episodes or population-based pathways. For example, an elderly patient with osteoarthritis may require coordinated care: lifestyle interventions, medication management, surgery, post-surgical rehabilitation, and chronic care monitoring. Paying separately for each service risks duplication, gaps, and cost escalation. Instead, bundled payments for the entire episode gives incentives to providers to collaborate and optimize the over full patient path.
+
+Moreover, healthcare pathways involve complementary services, where interventions like physical therapy may enhance surgical recovery, and substitutable services, such as lifestyle changes replacing medication in early disease management. Payment models should recognize these relationships to avoid inefficient resource use and improve patient outcomes (see @agrell2013 in another setting).
+
+Effective payment design must also account for externalities, the broader system-wide effects of individual interventions. Investment in preventive services, for example, reduces future hospitalizations and improves long-term health, but the benefits often accrue to different parts of the system (see e.g. @bogetoft2019).
+
+Addressing these challenges requires payment models that align incentives across the patient pathway, encouraging providers to coordinate services and focus on achieving the best outcomes over the full cycle of care [@berwick2008triple].
+
+## How to pay?
+
+The way healthcare services are paid for has effects on provider behavior. Payment schemes not only determine the level of care provided but also shape incentives for quality, coordination, and innovation. Moving beyond simple price-per-service models requires careful contract design to balance incentives and risks. Healthcare payment models fundamentally shape provider behavior by balancing incentives and risk. A payment model that offers strong incentives to improve quality and efficiency may also expose providers to financial risks they cannot control. Conversely, models that limit risk for providers often weaken their motivation to innovate or optimize care delivery (see e.g. @bogetoft2004 and @laffont2009theory).
+
+Regardless of the model chosen, quality metrics must be integrated into the payment system from the beginning. Monitoring outcomes, such as real health outcomes or intermediate outcomes such as patient recovery rates, readmission rates, and patient-reported experiences, is crucial to prevent cost control from degenerating into underprovision or inappropriate care [@fainman2020design].
+
+Economic theory shows that there is no ideal solution. Instead, payment systems must find a practical balance: enough incentive to drive performance, but not so much risk that providers engage in undesirable behaviors such as cherry-picking or the under production of necessary care (see @bogetoft2004 and @laffont2009theory). As healthcare delivery becomes more complex and more integrated, payment models must evolve along: from fragmented payments with low provider risk to more integrated models with higher provider responsibility.
+
+I review some standard payment models along this continuum.
+
+### Fee-for-Service (FFS) and In-Hospital Bundles (DRGs, DBCs, HRGs)
+
+The traditional fee-for-service model reimburses providers for each service delivered. While easy to administer, it encourages providers to maximize the number of services, leading to overproduction and fragmentation of care. Pure fee-for-service is rare today; most hospital systems use some form of bundling, such as Diagnosis-Related Groups (DRGs) in the United States, DBC (DTC) in the Netherlands, or Health Related Groups (HRG's) in the United Kingdom. These models group hospital services related to a specific condition but usually remain confined to a single provider.
+
+-   Risk: Primarily on the payer.
+
+-   Incentives: Strong for volume; little incentive for coordination; fragmentation remains.
+
+### Two-Part Tariffs
+
+Two-part tariffs combine a fixed component (e.g., capitation) with a variable, activity-based payment. For example, Dutch general practitioners receive a base capitation payment supplemented by a fee-for-service element [@kroneman2009income]. This model balances the need for stable income with incentives for productivity, but its effectiveness depends heavily on how the fixed and variable parts are calibrated. A low variable component may not sufficiently stimulate effort, while a high variable component can encourage overproduction. Proper case-mix adjustment is essential to prevent providers from avoiding high-risk or complex patients.
+
+-   Risk: Shared between payer and provider, depending on the mix.
+
+-   Incentives: Moderate; adjustable with careful calibration.
+
+### Bundled Payments
+
+Bundled payments extend the bundling concept across multiple providers and stages of care, for example, a hip replacement bundle covering preoperative consultations, surgery, rehabilitation, and follow-up care [@struijs2020bundled]. They incentivize coordination across the patient pathway and have shown potential for improving outcomes and reducing costs. However, bundled payments also introduce new complexities. To prevent providers from selectively treating low-risk patients, a phenomenon known as cherry-picking, careful case-mix adjustment is essential. Additionally, bundled payments require clear contractual arrangements among participating providers to define how payments and responsibilities are shared. Without clear agreements, coordination problems and disputes can arise, undermining the model’s intended benefits. Finally, success depends on establishing shared accountability for outcomes, ensuring that all providers involved in a patient’s care pathway are jointly responsible for both the quality and cost of care.
+
+-   Risk: Shared among multiple providers.
+-   Incentives: Strong for coordination and efficiency; requires careful case-mix adjustment to prevent cherry-picking.
+
+### Global Budgets
+
+Global budgets allocate a fixed total budget to cover all healthcare services for a defined population over a set period. By placing financial responsibility on providers, global budgets create strong incentives for cost control and resource prioritization. However, strong financial incentives also transfer significant risk to providers, who may respond by reducing necessary care to remain within budget (see e.g. @bogetoft2004 in other settings). Without effective quality monitoring and case-mix adjustments, there is a risk that providers prioritize cost savings over patient outcomes.
+
+To address these concerns, models such as Accountable Care Organizations (ACOs) in the United States and the Alternative Quality Contract (AQC) introduced by Blue Cross Blue Shield of Massachusetts have incorporated more sophisticated risk-sharing mechanisms with the payers. In these models, providers are eligible for shared savings if they manage to deliver care below predefined cost benchmarks. However, simply rewarding cost savings risks encouraging underprovision. To mitigate this, these contracts use asymmetric profit-sharing arrangements: providers can retain a larger share of savings if they also meet established quality targets, but gain little or nothing if quality falls below threshold standards [@song2019health].
+
+Another prominent example is Gesundes Kinzigtal in Germany. This model operates under a population-based global budget, where healthcare providers are financially responsible for the total cost of care for a defined population. Providers are incentivized to improve health outcomes and reduce avoidable healthcare use, and they share in any savings achieved. Gesundes Kinzigtal combines global budget principles with strong emphasis on preventive care, patient engagement, and the use of data analytics to monitor performance, offering valuable lessons on the potential and challenges of such payment reforms, see e.g. @bogetoft2019 and @larrain2023improving for a detailed discussion of the Gesundes Kinzigtal model.
+
+Additionally, many global budget models incorporate provisions which limit the financial exposure of providers in cases of exceptionally high-cost patients. These mechanisms ensure that while providers have incentives to deliver efficient care, they are not overly penalized for random variation in patient costs.
+
+-   Risk: Predominantly borne by providers, but shared with payers through shared savings.
+
+-   Incentives: Strong incentives for both cost control and quality improvement, provided that quality metrics are closely tied to financial rewards.
+
+## Who to Pay? Organizing Providers
+
+To align incentives along the patient pathway, we not only need to ask how to pay, but also who should be paid. Payment models influence provider behavior, but the effectiveness of these incentives depends on how care is organized and how responsibilities are distributed among providers. Fragmented organizational structures often undermine coordination, even when financial incentives are well-designed. Therefore, designing effective payment systems requires a parallel discussion about governance and contractual forms among providers.
+
+Effective provider collaboration goes beyond financial contracts, it requires trust, shared accountability, and aligned goals. As @aunger2021trust argue, successful inter-organizational collaboration in healthcare depends on the interplay of trust, confidence, and faith between actors. These elements are not only shaped by institutional arrangements but also by histories of cooperation, expectations of behavior, and mutual understanding. Especially when care spans different sectors, such as medical, mental health, and social care providers must be able to make joint investments and resolve conflicts over funding, responsibilities, and priorities. That calls for new governance models not just within organizations, but across institutional boundaries.
+
+Three broad governance forms are commonly discussed in the literature and practice.
+
+### Main Contractor Models
+
+In this structure, one lead organization, often a hospital, holds the main budget and subcontracts other providers. While this can streamline financial flows, centralize responsibility and limit informational asymmetries [@agrell2013 in a different setting], it also introduces hierarchies that may limit professional autonomy and undermine genuine cooperation. The main contractor may lack incentives to invest in coordination or prevention if those benefits accrue to subcontractors. Dutch experiments with this model, such as the "keten-DBCs" in diabetes care, have shown mixed results (@kroneman2009income; @struijs2021case).
+
+### Cooperative Models
+
+An alternative to hierarchical contracting is the cooperative model, where multiple providers jointly hold the contract and share responsibility for spending, outcomes, and governance. This model emphasizes horizontal collaboration, with shared decision-making, distributed risk, and collective accountability.
+
+Cooperatives might be promising when collaboration must occur across sectoral or institutional boundaries, for example, between medical care, mental health, and social services. They create incentives for mutual support and coordinated investment in prevention or care transitions that benefit the system as a whole.
+
+As @bogetoft2007cooperatives explain in the context of Danish agriculture, cooperatives succeed when internal payment schemes and decision rules align with individual members’ incentives. That means each participating provider, a hospital, a GP group, or a social care organization must be better off within the cooperative than outside of it. Importantly, no subgroup (a sub-coalition) should have an incentive to break away, which requires careful contract design and fair surplus distribution.
+
+These insights are crucial in healthcare, where provider types differ in size, cost structures, and patient populations. For cooperatives to function, internal contracts must acknowledge these differences while maintaining collective efficiency. This is often challenging in practice, as governance rules must avoid dominance by larger or more powerful members, and outcomes must be jointly attributable and measurable.
+
+In my own experience with regional cooperation in the Netherlands, I find that many healthcare providers are willing to collaborate in principle but hesitate when it comes to financial interdependence. Cooperative models require a level of transparency, mutual trust, and long-term commitment that is still rare in many healthcare markets. Dutch experiments such as Beter Samen in Noord and De Zeeuwse Zorgcoalitie look promising but also revealed insurers’ reluctance to engage with cooperatives, often preferring bilateral contracts with individual providers.
+
+Nevertheless, cooperative governance remains a promising way to align incentives across organizations while preserving professional autonomy and encouraging peer-based accountability.
+
+### Integrated Delivery Systems
+
+A more centralized model is the integrated delivery system, where providers are merged into a single organization that delivers a wide range of services. Historically, the Health Maintenance Organization (HMO) model was the most prominent form. HMOs combined capitated payment with a closed network of providers who assumed full responsibility for patient care. By integrating financing and delivery, HMOs aimed to control costs and reduce unnecessary care.
+
+However, HMOs faced significant backlash in the U.S. during the 1990s, as critics argued they restricted access, limited patient choice, and incentivized under-provision. This experience shaped the evolution of Accountable Care Organizations (ACOs) in the 2000s [@dugan2015trends].
+
+ACOs represent a more flexible, incentive-based evolution of HMOs. Rather than pre-paying providers, ACOs operate on shared savings contracts: if providers can deliver care below a set benchmark while maintaining quality, they share the savings. Conversely, if spending exceeds the target, they may face shared losses. Most ACOs continue to use fee-for-service as a base, but overlay this with performance incentives and retrospective reconciliation.
+
+As @song2019health demonstrate, long-term experience with global budgets in ACO-like models, such as the Massachusetts Alternative Quality Contract, shows that savings can be sustained if quality incentives are carefully embedded. However, data infrastructure, integration of care, and mutual trust among providers remain prerequisites for success.
+
+A similar integrated care model has been implemented in Germany through Gesundes Kinzigtal, which combines global budgets and shared savings with strong community engagement. Providers and insurers collaborate in a joint venture to improve population health and reduce unnecessary care, supported by real-time data analytics and performance feedback. Evaluations of the program indicate sustained improvements in outcomes and reductions in costs (@groene2025integrated).
+
+These examples illustrate that joint accountability is critical to avoid cost-shifting and to ensure a shared focus on patient outcomes. Shared savings and risk-sharing mechanisms must be carefully calibrated to encourage collaboration without punishing providers for unavoidable complexity [@berwick2008triple].
+
+## Who pays? Organizing Payers
+
+In theory, multiple insurers competing under managed competition should drive efficiency and innovation. However, in practice, payer-side fragmentation introduces coordination failures. A central issue is that payment reform by one insurer can generate positive externalities -such as better outcomes, lower hospital use, or spillover learning effects- that benefit all insurers in the region. This creates a public goods problem: no individual insurer has sufficient incentive to invest in innovation alone, since others free-ride on the results.
+
+Our forthcoming work [@mikkers2025competition] provides a formal model of these dynamics. We show that even when follow-up contracts to a successful pilot (e.g. bundled payments) are socially beneficial and legally permissible, they may fail to materialize due to misaligned incentives between insurers. This inefficiency is not a matter of regulatory restriction, but of strategic behavior in a decentralized system.
+
+To resolve this, follow-up policies are needed, mechanisms that encourage or require joint contracting or collective action when payment innovations prove effective. Such arrangements are increasingly allowed under competition law frameworks, for example, the Dutch Competition Authority permits joint purchasing when it supports “appropriate care.” However, permissibility alone may be insufficient: without proper incentive alignment or coordination mechanisms, effective payment models may remain isolated pilots rather than becoming structural improvements. For example, ParkinsonNet[^payment-1], despite its proven cost-effectiveness and quality improvements, still depends largely on temporary innovation grants [@bloem2017parkinsonnet].
+
+[^payment-1]: ParkingonNet is a Dutch healthcare initiative that organizes care for people with Parkinson's disease through regional networks of different types of providers.
+
+Furthermore, these challenges are even harder when different types of payers, such as health insurers, long-term care purchasers, and municipalities, must collaborate. Each operates under a distinct legal regime and serves overlapping populations. As a result, the need for coordination is both more urgent and more difficult, reinforcing the call for institutional frameworks that enable shared responsibility and long-term investment.

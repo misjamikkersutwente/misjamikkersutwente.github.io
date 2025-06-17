@@ -1,0 +1,112 @@
+# Coordination: Doing the Right Things
+
+```{r packages and settings, include= FALSE, eval=TRUE}
+
+knitr::opts_chunk$set(message = FALSE, warning = FALSE,
+                      echo = FALSE)
+
+options(scipen=999)
+
+library(tidyverse) # for data manipulation and plotting
+library(brms)
+library(broom.mixed)
+library(cowplot)
+
+
+```
+
+## Introduction
+
+In the previous chapter, I argued that the central challenge facing modern healthcare systems is not only financial, but structural: a growing mismatch between the rising demand for care and the limited supply of qualified professionals. This bottleneck calls for more than optimizing existing processes, we need to rethink what care is delivered, by whom, and how it is organized. In short, we must shift our focus from technical efficiency (doing things right) to allocative efficiency (doing the right things).
+
+Too often, health system reforms have concentrated on making individual organizations or care processes more efficient in isolation, what we might call subsystem optimization. Hospitals are streamlined, GP practices digitalized, and care pathways standardized, but these efforts frequently fail to deliver better system-wide outcomes. As @berwick2008triple argue in their formulation of the Triple Aim, improving population health and reducing costs requires more than improving individual components, it demands coordinated action across the whole system. Similar concerns are raised by @valentijn2013understanding, who emphasize that the integrative function of care, especially primary care, is often overlooked when efficiency is pursued in silos.
+
+This fragmentation is not unique to any one country. The @OECD_2023 points out that many countries struggle with disjointed care delivery, even when individual providers or sectors function well. Fragmentation persists because optimization at the micro-level, of specific organizations or sectors, does not automatically translate into macro-level system performance.
+
+But today’s challenges, rising demand, increasing complexity, and especially labor scarcity, make this kind of fragmented optimization unsound. We cannot improve the system by tweaking existing processes. Instead, we need a shift towards allocative efficiency: doing the right things, at the right place, with the right people.
+
+This shift requires better coordination: the deliberate alignment of actors, incentives, and information across sectors and organizations, also beyond the healthcare sector in the traditional sense. Better coordination helps us reallocate care more sensibly, prevent duplication, and improve outcomes.
+
+The following sections develop this line of reasoning. I argue that in times of labor scarcity and rising demand, coordinated, system-level thinking must replace fragmented subsystem optimization.
+
+## Barriers to Coordination
+
+Efforts to improve healthcare often focus on optimizing discrete components of the system, specific institutions, specialties, or processes, without addressing how these elements interact. As discussed in the previous section, this approach fails to achieve allocative efficiency and often results in fragmented care, inefficiencies, and unmet patient needs. Below, I outline four systemic barriers that hinder better coordination across healthcare systems.
+
+### **Misaligned Incentives**
+
+One of the most persistent barriers to coordination is how healthcare is financed. Budgets are typically divided between medical, social, preventive, and long-term care services, each governed by different rules, actors, and incentives. Hospitals are paid for treatments, not for avoiding admissions. GPs are paid per consultation, not for coordinating care. Municipalities fund social care, while health insurers fund curative care, often without aligned objectives.
+
+This setup works against prevention and integrated care. For instance, as @danesh2024 show, people with lower incomes in the Netherlands develop chronic conditions like diabetes much earlier in life. We treat everyone equally once they become patients, but too late. The system provides equal treatment but not equal opportunity for health, resulting in unnecessary suffering and avoidable use of scarce healthcare labor.
+
+These coordination problems become even more complex when not just health insurers, but also municipalities and long-term care purchasing agencies ('zorgkantoren') are involved. Each of these actors operates under different legal frameworks and financing structures, which can create incompatible incentives across patient pathways. For instance, municipalities may prioritize short-term social care budgets, while insurers focus on medical care costs, leading to mismatches or inefficiencies. Addressing such cross-sectoral misalignment requires careful contractual design and potentially national-level alignment on goals and responsibilities.
+
+I return to these financing issues in detail in the next chapter, where I explore how payment models can be redesigned to support better coordination and long-term health outcomes.
+
+### **Institutional and Disease-Centered Fragmentation**
+
+Healthcare systems remain largely organized around institutions, hospitals, general practices, and home care agencies, and around individual diseases. Clinical guidelines and care protocols often follow a single-disease model, even though multimorbidity is now the norm, especially among older adults, see e.g. @boyd2005clinical. This disease-centered logic fragments care pathways and ignores how patients actually experience illness, typically as a set of interconnected physical, mental, and social challenges. These single disease focused guidelines may be harmful for patients [@american2012patient].
+
+Patients with multiple chronic conditions may interact with a range of providers across different locations, each using separate IT systems, operating under different payment models, and pursuing distinct treatment goals. Transitions of care, such as from hospital to home, or between physical and mental healthcare, are often poorly coordinated. This leads to duplication of diagnostics, inconsistent medication prescription, and confusion for patients and families, see e.g. @schoen2005taking and @nolte2008one.
+
+### **Information Gaps and Poor Data Sharing**
+
+Even when providers want to coordinate, they are often blocked by fragmented information systems. Electronic health records (EHRs) are typically siloed across institutions, and interoperability remains limited [@oecd2019health]. Legal, technical, and organizational barriers delay or prevent timely data exchange, particularly across sectors such as medical and social care.
+
+A common consequence is the so-called "wrong bed day" (delayed hospital discharge or bed blocking) phenomenon: patients remain in hospitals longer than medically necessary, not because they still require acute care, but because appropriate follow-up care, such as in a revalidation facility, short term residential care (ELV in Dutch), or district nursing care, cannot be arranged in time. These delays are not only costly but also compromise patient recovery and reduce hospital throughput, see e.g. @kripalani2007promoting .
+
+### **Cultural and Behavioral Barriers**
+
+Beyond institutions and data systems, fragmentation also exists at the cultural and professional level. Different sectors: medical, social, and mental health, operate with distinct routines, vocabularies, and professional norms. General practitioners, hospital specialists, district nurses, social workers, and mental health professionals may all be committed to patient care, but they often differ on priorities, responsibilities, and interpretations of what good care entails.
+
+These professional boundaries can obstruct cooperation. As shown in a systematic review [@schot2020working], professionals often work to bridge gaps between roles, negotiate responsibilities, and create collaborative spaces. However, such efforts are not always structurally supported. Without intentional support for interprofessional collaboration, team-based care can become fragmented.
+
+Professional autonomy, while essential for trust and motivation, can become a barrier when cross-sector collaboration is required. Teams that function well within one organization may struggle to work across settings. As Edwin van der Meer (BovenIJ Hospital, Beter Samen in Noord) noted in an interview embedded in the inaugural adress, “knowing each other”, both personally and professionally, is a critical success factor for effective coordination. While the success of Beter Samen in Noord highlights the potential of trust-based collaboration, it also underscores the fragility of such arrangements in the absence of formal support structures or aligned financial incentives.
+
+Without mutual understanding and trust, even well-intentioned partnerships risk remaining superficial. Sustained collaboration demands more than organizational alignment; it requires a culture of shared responsibility and the development of interpersonal relationships across sectoral boundaries.
+
+## Our approach: Health Systems Engineering
+
+### Introduction
+
+The previous section described the persistent barriers to effective coordination in healthcare. These are not isolated problems, they are systemic. Addressing them requires a shift in how we understand and organize healthcare. I propose an approach rooted in Health Systems Engineering (HSE): a blend of economic contract theory, systems thinking and systems engineering.
+
+Our approach to Health Systems Engineering (HSE) offers a conceptual framework for redesigning healthcare. It views healthcare as a complex, interdependent system in which improving overall performance depends on optimizing the interactions between actors, not just improving isolated units. The goal is to enable better coordination across the system.
+
+Coordination, however, does not emerge automatically. It must be designed and sustained through incentives that align the goals of individual actors with broader system objectives. Motivation is essential for coordination: actors need to be supported -not punished- for doing the right things, even if those actions do not benefit their own silo under current rules.
+
+At the same time, the system must minimize transaction costs, support dynamic adaptability, and respect professional autonomy. Our approach to HSE draws from contract theory (@bogetoft2004 and @bogetoft2007cooperatives) to structure incentives and decision rights, and from systems thinking (@john2000business, @bonnema2023complex) to handle complexity, feedback, and unintended consequences.
+
+### Systems Perspective: Layers, Interfaces, and Subsystems
+
+I begin with the systems perspective. Healthcare is not a single system, but a set of interacting subsystems. For example, an Emergency Care Department is a subsystem within a hospital; the hospital is part of a larger healthcare system alongside general practitioners, district nursing, mental health providers, and other institutions. This healthcare system, in turn, interacts with other supersystems, such as education, housing, labor markets, and social security. Together, these constitute a broader social system -a supersystem- in which health is both an outcome and a determinant.
+
+Each of these systems is layered. I distinguish three levels:
+
+1.  Cultural elements: trust, leadership, professional identity, shared values;
+
+2.  Organizational structures: roles, governance, networks, institutions;
+
+3.  Financing mechanisms: budgets, incentives, contracts, accountability.
+
+Problems often emerge at the interfaces, boundaries between subsystems (e.g., hospital and home care) or between systems (e.g., medical and social care). For instance, "wrong bed days" arise when a patient no longer needs hospital care but cannot transition to appropriate follow-up care due to organizational or financial misalignment.
+
+Rather than focusing only on improving individual components, HSE emphasizes the interdependencies among them. Optimizing one part of the system, without attention to its interactions, can degrade performance elsewhere. Our framework combines contract theory and systems thinking to guide the redesign of those interactions: aligning incentives, allocating decision rights, and enabling mutual adjustment across settings. In the following chapter, I focus on payment models not because they are the only important element for change, but because they expose the broader structural challenges of coordination, motivation, and accountability in fragmented systems. They offer a concrete entry into more holistic system redesign.
+
+### Contracts, Coordination, and Motivation
+
+Building on the insights of @bogetoft2004, @bogetoft2007cooperatives and @milgrom1992, I understand contracts not just as legal documents, but as tools for organizing systems. In this view, contracts are institutional tools that shape behavior, allocate responsibilities, and structure interactions across actors within a system. A well-designed contract performs two essential functions:
+
+1.  Coordination: ensuring the right actors take the right actions at the right time and place;
+
+2.  Motivation: aligning the incentives of autonomous actors to pursue system-level goals.
+
+These functions are connected. In decentralized healthcare systems, motivation is a prerequisite for coordination. Effective contracts must create incentives not only to deliver services, but to do so in a way that stimulated collaboration, learning, prevention, continuity of care, and the reduction of avoidable care such as hospital admissions. If providers are expected to engage in undertaking coordinated actions such as collaboration, joint planning, information sharing, or investing in transitional care, the financial structure must make such actions worthwhile. Their costs must be recoverable, and their expected benefits must outweigh the opportunity costs. Coordinated action must not be a loss-making activity, otherwise, even when system-wide benefits are evident, the absence of individual incentives will lead to fragmentation, underinvestment, and strategic behavior.
+
+In addition to coordination and motivation, two further aspects are essential. First, transaction costs (such as administrative burden, reporting and lobbying cost) must be minimised, not only in the design and negotiation of contracts, but also in their monitoring and enforcement. Second, contracts must be dynamically adaptable: they must be robust to uncertainty, capable of accommodating change, and supportive of learning over time.
+
+These four elements, coordination, motivation, transaction costs, and dynamic adjustment, form the core concerns of HSE.
+
+The structural and behavioral barriers discussed in this chapter all point to a common need: better coordination across the healthcare system. Yet coordination alone is not enough. The systems we’ve built reward thinking and acting in silos, fragmented delivery of care, and short-term cost control. To overcome these constraints, we need financial mechanisms that not only support integration but actively incentivize it.
+
+In the next chapter, I zoom in on payment schemes as a key design element. Payment schemes are not just financial mechanisms: they shape behavior, coordination, and motivation. By exploring how payment models support or hinder system goals, I highlight why contract theory and systems thinking are essential tools in building future-ready healthcare systems.
